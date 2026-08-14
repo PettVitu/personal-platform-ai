@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f1117" />
+    <meta name="description" content="Vibe Coding — aprenda programando coisas que você quer mostrar." />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%238b5cf6'/%3E%3Cpath d='M24 62 42 34l14 20 10-13 10 21H24Z' fill='white'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Vibe Coding</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navegação principal">
+        <a class="brand" href="#home" data-route="home" aria-label="Vibe Coding, início"><span class="brand-mark">✦</span><span>vibe<span class="brand-accent">/</span>coding</span></a>
+        <p class="eyebrow sidebar-label">Seu laboratório</p>
+        <nav class="nav-list">
+          <button class="nav-item active" data-route="home"><span>⌂</span> Início</button>
+          <button class="nav-item" data-route="learn"><span>◈</span> Aprender</button>
+          <button class="nav-item" data-route="feed"><span>✳</span> Feed</button>
+          <button class="nav-item" data-route="projects"><span>▱</span> Projetos</button>
+          <button class="nav-item" data-route="profile"><span>◎</span> Perfil</button>
+        </nav>
+        <div class="sidebar-bottom"><div class="mini-progress"><div class="progress-ring">42%</div><div><strong>Trilha criativa</strong><small>2 de 5 passos</small></div></div><button class="ghost-button full" data-action="settings">⚙ Configurações</button></div>
+      </aside>
+      <main class="main-content">
+        <header class="topbar"><button class="mobile-menu" aria-label="Abrir menu">☰</button><div class="breadcrumb"><span class="muted">Laboratório</span><span>/</span><strong id="page-title">Início</strong></div><div class="top-actions"><button class="icon-button" aria-label="Notificações" data-action="notifications">♧<i></i></button><button class="avatar avatar-small" data-route="profile" aria-label="Abrir perfil">BM</button></div></header>
+        <div id="app-view" class="view-container"></div>
+      </main>
+    </div>
+    <nav class="mobile-nav" aria-label="Navegação mobile"><button class="active" data-route="home"><span>⌂</span>Início</button><button data-route="learn"><span>◈</span>Aprender</button><button data-route="feed"><span>✳</span>Feed</button><button data-route="projects"><span>▱</span>Projetos</button><button data-route="profile"><span>◎</span>Perfil</button></nav>
+    <div id="onboarding-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="onboarding-title"><div class="modal onboarding-modal"><button class="modal-close" data-action="close-onboarding" aria-label="Fechar onboarding">×</button><div class="onboarding-orb">✦</div><p class="eyebrow">bem-vindo ao laboratório</p><h2 id="onboarding-title">Aprenda criando coisas que você quer mostrar.</h2><p class="modal-copy">Escolha um ponto de partida. Você pode mudar tudo depois.</p><div class="onboarding-options" id="onboarding-options"><button class="option-card selected" data-interest="visual"><span>◌</span><strong>Visual</strong><small>Canvas, CSS e movimento</small></button><button class="option-card" data-interest="audio"><span>◒</span><strong>Música & áudio</strong><small>Som, ritmo e WebAudio</small></button><button class="option-card" data-interest="interaction"><span>⌘</span><strong>Interação</strong><small>Jogos e experiências</small></button></div><button class="primary-button full" data-action="start-onboarding">Começar uma prática de 8 minutos <span>→</span></button><button class="text-button full" data-action="close-onboarding">Explorar primeiro</button><small class="privacy-note">Sem cartão. Sem integração externa. Seu perfil começa privado.</small></div></div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>

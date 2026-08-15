@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
-import "../../styles.css";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Vibe Coding",
-  description: "Aprenda programação criando coisas que você quer mostrar.",
+  title: "personal platform AI",
+  description: "Um espaço pessoal para organizar tarefas, compromissos e informações.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <html lang="pt-BR">
-      <body>{children}</body>
-    </html>
-  );
+  return <html lang="pt-BR"><body>{children}</body></html>;
 }

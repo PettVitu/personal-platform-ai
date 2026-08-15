@@ -1,43 +1,20 @@
-# 06 — Segurança, privacidade e LGPD
+# 06 — Segurança e privacidade
 
-## Finalidade e base legal
+## Estado da primeira entrega
 
-Tratar somente dados necessários para fornecer organização financeira, cálculos, alertas e recursos explicitamente escolhidos. O consentimento deve ser livre, informado, específico e revogável para integrações opcionais. A base legal final deve ser validada juridicamente para cada tratamento; execução técnica não substitui orientação especializada.
+Os dados ficam no navegador via `localStorage`. Isso não oferece backup, criptografia de aplicação, isolamento entre contas ou sincronização.
 
-## Matriz de permissões
+## Requisitos antes de produção
 
-| Permissão | Necessária | Finalidade | Revogação |
-|---|---:|---|---:|
-| Dados digitados/importados | Sim para uso | Organizar e calcular | Apagar/exportar |
-| Ler calendário | Não | Mostrar eventos e sugerir lembretes | Sim, invalida token |
-| Ler e-mail | Não e posterior | Identificar cobranças autorizadas | Sim, remove acesso |
-| Enviar e-mail | Não no MVP | Comunicação externa | Não conceder |
-| Alterar calendário | Não no MVP | Ação externa | Não conceder |
-| Conta bancária | Fora do MVP | Importação automática | Não conceder |
+- autenticação e autorização server-side;
+- banco com isolamento por usuário;
+- criptografia em trânsito e repouso;
+- validação de entrada;
+- rate limiting;
+- logs sem dados sensíveis;
+- exportação e exclusão verificáveis;
+- política de retenção;
+- testes de acesso indevido;
+- controle de documentos consultáveis pela IA.
 
-## Controles técnicos
-
-- Criptografia em trânsito e repouso.
-- Tokens externos criptografados, com rotação e nunca expostos ao frontend.
-- Isolamento por usuário e autorização server-side em toda consulta.
-- MFA/reautenticação para ações sensíveis, rate limiting e proteção contra abuso.
-- Logs de auditoria sem conteúdo financeiro desnecessário.
-- Backups criptografados, restauração testada e retenção definida.
-- Dependências, segredos e pipelines revisados.
-- Monitoramento de acessos anômalos e falhas de autenticação.
-
-## Direitos do usuário
-
-Informar finalidade, acesso, correção, portabilidade, revogação, oposição quando aplicável e exclusão. Exportar dados em formato legível. Excluir conta com confirmação reforçada, registro do processamento e indicação de retenções legais/técnicas, se houver.
-
-## E-mail e agenda
-
-Solicitar apenas scopes mínimos. Mostrar provedor, escopo, dados lidos, finalidade e impacto. Não enviar, responder, apagar ou alterar eventos no MVP. Ao revogar, invalidar token, parar jobs e informar destino de dados já derivados.
-
-## Incidente
-
-Detectar → conter → preservar evidências → avaliar impacto → corrigir → comunicar conforme obrigação aplicável → revisar controles. Definir responsáveis, contatos, janela de resposta e testes antes do lançamento.
-
-## Aceite de segurança
-
-Não liberar integração sem threat model, revisão de permissões, teste de revogação, logs auditáveis, política de retenção, teste de isolamento e plano de incidente.
+A API atual expõe explicitamente `persistence: memory` e `authentication: pending` no endpoint de saúde.

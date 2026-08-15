@@ -1,19 +1,45 @@
-# personal-platform-ai
+# personal platform AI
 
-Este repositório contém a documentação modular e o protótipo navegável da plataforma Vibe Coding.
+Aplicativo pessoal privado para organizar tarefas, compromissos, finanças básicas e documentos textuais.
 
-## Executar o protótipo
+## Estado atual
 
-Como é uma PWA estática sem dependências, execute na raiz do projeto:
+Esta primeira entrega é um frontend funcional em Next.js com persistência local via `localStorage`. Os dados são demonstrativos na primeira execução e permanecem neste dispositivo depois das alterações.
+
+O Amarildo e a reformulação de textos são demonstrações locais. A API local já existe, mas usa memória do processo; ainda não há banco persistente, autenticação, sincronização, importação de arquivos ou chamada real de IA.
+
+## Executar
 
 ```powershell
-python -m http.server 4173
+npm.cmd install
+npm.cmd run dev
 ```
 
-Depois abra `http://localhost:4173`.
+Abra `http://localhost:3000`.
 
-O protótipo usa dados mockados e `localStorage`. Ainda não possui autenticação, backend, pagamento ou persistência real.
+Endpoints locais:
 
-## Documentação
+- `GET /api/health`
+- `GET|POST /api/tasks`
+- `PATCH|DELETE /api/tasks/:id`
+- `GET|POST /api/transactions`
+- `PATCH|DELETE /api/transactions/:id`
+- `GET|POST /api/bills`
+- `PATCH|DELETE /api/bills/:id`
 
-Veja [docs/vibe-coding/README.md](docs/vibe-coding/README.md) para a documentação do produto.
+Para validar produção:
+
+```powershell
+npm.cmd run build
+```
+
+## Arquitetura
+
+- `src/domain`: tipos, dados iniciais e persistência.
+- `src/components`: shell, navegação e módulos de produto.
+- `src/app`: entrada do aplicativo e metadata.
+- `public`: manifest e service worker.
+
+## Próxima etapa
+
+Substituir o adaptador de `localStorage` por uma API autenticada, mantendo os tipos e contratos de domínio independentes da interface.

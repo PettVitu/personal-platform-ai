@@ -7,7 +7,7 @@ type TaskFormProps = { initial?: Task; onSave: (task: Task) => void; onCancel: (
 
 export function TasksView({ tasks, onAdd, onUpdate, onToggle, onDelete }: { tasks: Task[]; onAdd: (task: Task) => void; onUpdate: (task: Task) => void; onToggle: (id: string) => void; onDelete: (id: string) => void }) {
   const [editing, setEditing] = useState<Task | null>(null); const [showForm, setShowForm] = useState(false);
-  const pending = tasks.filter((task) => task.status === "pending"); const completed = tasks.filter((task) => task.status === "completed");
+  const safeTasks = tasks.filter(Boolean); const pending = safeTasks.filter((task) => task.status === "pending"); const completed = safeTasks.filter((task) => task.status === "completed");
   function openNew() { setEditing(null); setShowForm(true); }
   function save(task: Task) { if (editing) onUpdate(task); else onAdd(task); setShowForm(false); setEditing(null); }
   return <>

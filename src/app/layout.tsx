@@ -3,6 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "personal platform AI",
+  icons: { icon: "/icon.svg" },
   description: "Um espaço pessoal para organizar tarefas, compromissos e informações.",
 };
 

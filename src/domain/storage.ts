@@ -6,7 +6,17 @@ export function loadAppData(seed: AppData): AppData {
   if (typeof window === "undefined") return seed;
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY);
-    return stored ? { ...seed, ...JSON.parse(stored) } : seed;
+    if (!stored) return seed;
+    const parsed = JSON.parse(stored) as Partial<AppData>;
+    return {
+      ...seed,
+      ...parsed,
+      tasks: Array.isArray(parsed.tasks) ? parsed.tasks.filter(Boolean) : seed.tasks,
+      transactions: Array.isArray(parsed.transactions) ? parsed.transactions.filter(Boolean) : seed.transactions,
+      bills: Array.isArray(parsed.bills) ? parsed.bills.filter(Boolean) : seed.bills,
+      appointments: Array.isArray(parsed.appointments) ? parsed.appointments.filter(Boolean) : seed.appointments,
+      documents: Array.isArray(parsed.documents) ? parsed.documents.filter(Boolean) : seed.documents,
+    };
   } catch {
     return seed;
   }

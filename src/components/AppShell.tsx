@@ -1,10 +1,11 @@
 import type { ReactNode } from "react";
 import { Icon } from "./Icon";
 
-export type AppRoute = "today" | "tasks" | "finance" | "agenda" | "more";
+export type AppRoute = "today" | "spreadsheet" | "tasks" | "finance" | "agenda" | "more";
 
 const navItems: { route: AppRoute; label: string; icon: "today" | "tasks" | "finance" | "calendar" | "more" }[] = [
   { route: "today", label: "Hoje", icon: "today" },
+  { route: "spreadsheet", label: "Planilha", icon: "finance" },
   { route: "tasks", label: "Tarefas", icon: "tasks" },
   { route: "finance", label: "Finanças", icon: "finance" },
   { route: "agenda", label: "Agenda", icon: "calendar" },

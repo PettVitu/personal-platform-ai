@@ -55,3 +55,19 @@ export type AppData = {
   appointments: Appointment[];
   documents: DocumentNote[];
 };
+
+export type CreateTaskInput = Omit<Task, "id" | "status"> & { status?: TaskStatus };
+export type UpdateTaskInput = Partial<Omit<Task, "id">>;
+export type CreateTransactionInput = Omit<Transaction, "id">;
+export type UpdateTransactionInput = Partial<Omit<Transaction, "id">>;
+export type CreateRecurringBillInput = Omit<RecurringBill, "id" | "paid"> & { paid?: boolean };
+export type UpdateRecurringBillInput = Partial<Omit<RecurringBill, "id">>;
+
+export type ApiErrorKind = "network" | "validation" | "server" | "not-found" | "unknown";
+
+export class DomainApiError extends Error {
+  constructor(public readonly kind: ApiErrorKind, message: string, public readonly status?: number) {
+    super(message);
+    this.name = "DomainApiError";
+  }
+}

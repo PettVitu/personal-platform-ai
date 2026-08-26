@@ -21,4 +21,8 @@ export const seedData: AppData = {
   documents: [
     { id: "document-1", title: "Apólice do seguro residencial", category: "Casa", content: "Documento demonstrativo salvo localmente.", updatedAt: "2026-08-10", aiAccess: false },
   ],
+  budgetCategories: [
+    { id: "budget-category-1", name: "Transporte", monthlyAmount: 250 },
+    { id: "budget-category-2", name: "Lazer", monthlyAmount: 300 },
+  ],
 };

@@ -16,6 +16,7 @@ export function loadAppData(seed: AppData): AppData {
       bills: Array.isArray(parsed.bills) ? parsed.bills.filter(Boolean) : seed.bills,
       appointments: Array.isArray(parsed.appointments) ? parsed.appointments.filter(Boolean) : seed.appointments,
       documents: Array.isArray(parsed.documents) ? parsed.documents.filter(Boolean) : seed.documents,
+      budgetCategories: Array.isArray(parsed.budgetCategories) ? parsed.budgetCategories.filter(Boolean) : seed.budgetCategories,
     };
   } catch {
     return seed;

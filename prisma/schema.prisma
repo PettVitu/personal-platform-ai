@@ -29,6 +29,7 @@ model User {
   appointments  Appointment[]
   documents     DocumentNote[]
   watchlist     WatchlistItem[]
+  budgetCategories BudgetCategory[]
 
   createdAt DateTime @default(now())
 }
@@ -151,6 +152,22 @@ model DocumentNote {
   content   String   @db.Text
   updatedAt String
   aiAccess  Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// Estimativa mensal de gasto "não mapeado" (transporte, lazer, futilidades — coisas
+// que normalmente não viram um Transaction lançado um a um). Alimenta o cálculo do
+// orçamento diário em src/domain/daily-budget.ts. Sem período: é um valor vivo que
+// o usuário mantém, dividido proporcionalmente pelos dias do mês no cálculo.
+model BudgetCategory {
+  id            String   @id @default(cuid())
+  userId        String
+  name          String
+  monthlyAmount Float
+  createdAt     DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

@@ -30,6 +30,21 @@ O módulo financeiro registra fatos informados pelo usuário. Ele não é banco,
 
 Saldo = receitas confirmadas − despesas confirmadas. Todo resumo deve indicar período e origem. Valores são exibidos em `pt-BR` e armazenados sem depender de operações imprecisas de ponto flutuante em uma implementação de produção.
 
+### Categorias de gasto diário e controle de orçamento
+
+Além dos lançamentos individuais, o usuário pode pré-cadastrar categorias de gasto do dia a dia que normalmente não geram lançamento (transporte, lazer, futilidades), cada uma com um valor mensal estimado. Isso alimenta um cálculo de "quanto dá pra gastar hoje" (`src/domain/daily-budget.ts`, função pura e testada), recalculado por mês calendário:
+
+```
+orçamento diário = (saldo atual + receitas previstas até o fim do mês
+                     − contas não pagas com vencimento até o fim do mês
+                     − categorias de gasto (proporcional aos dias restantes))
+                    / dias restantes no mês
+```
+
+O orçamento de cada dia **zera à meia-noite** — não acumula sobra do dia anterior. É um freio de referência, não uma poupança. Mostrado como card compacto em "Hoje" e detalhado em "Finanças" (`src/components/DailyBudgetCard.tsx`).
+
+**Fora de escopo desta versão** (registrado para depois, não esquecido): visualização em formato de planilha/"farol" colorido para os próximos dias; projeção de longo prazo (até 2 anos); modelagem de parcelamento/recorrência dentro de "Contas recorrentes" (cartão parcelado × único × recorrente indefinido, com contagem de parcelas).
+
 ### Proibições
 
 Não incluir crédito, empréstimos, produtos bancários, integração bancária, recomendações ou promessa de resultado. Investimentos são tratados em módulo separado (ver abaixo) e nunca se misturam ao saldo/lançamentos deste módulo.

@@ -9,9 +9,9 @@ import { MoreView } from "../components/MoreView";
 import { TasksView } from "../components/TasksView";
 import { SpreadsheetView } from "../components/SpreadsheetView";
 import { TodayView } from "../components/TodayView";
-import { billRepository, localRepository, taskRepository, transactionRepository } from "../domain/repositories";
+import { billRepository, budgetCategoryRepository, localRepository, taskRepository, transactionRepository } from "../domain/repositories";
 import { seedData } from "../domain/seed";
-import type { AppData, Appointment, DocumentNote, RecurringBill, Task, Transaction } from "../domain/types";
+import type { AppData, Appointment, BudgetCategory, DocumentNote, RecurringBill, Task, Transaction } from "../domain/types";
 
 const local = localRepository();
 
@@ -24,8 +24,8 @@ export default function HomePage() {
 
   useEffect(() => {
     let active = true;
-    Promise.all([taskRepository.list(), transactionRepository.list(), billRepository.list()]).then(([tasks, transactions, bills]) => {
-      if (active) { const next = { ...local.getData(), tasks, transactions, bills }; local.replaceData(next); setData(next); }
+    Promise.all([taskRepository.list(), transactionRepository.list(), billRepository.list(), budgetCategoryRepository.list()]).then(([tasks, transactions, bills, budgetCategories]) => {
+      if (active) { const next = { ...local.getData(), tasks, transactions, bills, budgetCategories }; local.replaceData(next); setData(next); }
     }).catch(() => {
       if (active) { setData(local.getData()); setMessage("API indisponível. Usando os dados locais deste dispositivo."); }
     }).finally(() => { if (active) setLoading(false); });
@@ -51,8 +51,11 @@ export default function HomePage() {
   const updateBill = (item: RecurringBill) => operation(() => billRepository.update(item.id, item), () => local.update("bills", item.id, item) as Promise<RecurringBill>, (value) => setData((current) => ({ ...current, bills: current.bills.map((currentItem) => currentItem.id === item.id ? value : currentItem) })));
   const deleteBill = (id: string) => operation(() => billRepository.remove(id).then(() => id), () => local.remove("bills", id).then(() => id), (value) => setData((current) => ({ ...current, bills: current.bills.filter((item) => item.id !== value) })));
   const deleteSpreadsheetRow = (row: { id: string; source: "task" | "transaction" | "bill" }) => row.source === "task" ? deleteTask(row.id) : row.source === "transaction" ? deleteTransaction(row.id) : deleteBill(row.id);
+  const addBudgetCategory = (item: BudgetCategory) => operation(() => budgetCategoryRepository.create({ name: item.name, monthlyAmount: item.monthlyAmount }), () => local.create("budgetCategories", item) as Promise<BudgetCategory>, (value) => setData((current) => ({ ...current, budgetCategories: [...current.budgetCategories, value] })));
+  const updateBudgetCategory = (item: BudgetCategory) => operation(() => budgetCategoryRepository.update(item.id, item), () => local.update("budgetCategories", item.id, item) as Promise<BudgetCategory>, (value) => setData((current) => ({ ...current, budgetCategories: current.budgetCategories.map((currentItem) => currentItem.id === item.id ? value : currentItem) })));
+  const deleteBudgetCategory = (id: string) => operation(() => budgetCategoryRepository.remove(id).then(() => id), () => local.remove("budgetCategories", id).then(() => id), (value) => setData((current) => ({ ...current, budgetCategories: current.budgetCategories.filter((item) => item.id !== value) })));
 
-  const content = useMemo(() => route === "today" ? <TodayView data={data} onNavigate={setRoute} onToggleTask={toggleTask} /> : route === "spreadsheet" ? <SpreadsheetView data={data} onToggleTask={toggleTask} onToggleBill={(id) => { const bill = data.bills.find((item) => item.id === id); if (bill) updateBill({ ...bill, paid: !bill.paid }); }} onDelete={deleteSpreadsheetRow} /> : route === "tasks" ? <TasksView tasks={data.tasks} onAdd={addTask} onUpdate={updateTask} onToggle={toggleTask} onDelete={deleteTask} /> : route === "finance" ? <FinanceView transactions={data.transactions} bills={data.bills} onAddTransaction={addTransaction} onUpdateTransaction={updateTransaction} onDeleteTransaction={deleteTransaction} onToggleBill={(id) => { const bill = data.bills.find((item) => item.id === id); if (bill) updateBill({ ...bill, paid: !bill.paid }); }} onAddBill={addBill} onUpdateBill={updateBill} onDeleteBill={deleteBill} /> : route === "investments" ? <InvestmentsView /> : route === "agenda" ? <AgendaView appointments={data.appointments} onAdd={(item: Appointment) => replace({ appointments: [...data.appointments, item] })} /> : <MoreView documents={data.documents} onAddDocument={(item: DocumentNote) => replace({ documents: [...data.documents, item] })} />, [route, data]);
+  const content = useMemo(() => route === "today" ? <TodayView data={data} onNavigate={setRoute} onToggleTask={toggleTask} /> : route === "spreadsheet" ? <SpreadsheetView data={data} onToggleTask={toggleTask} onToggleBill={(id) => { const bill = data.bills.find((item) => item.id === id); if (bill) updateBill({ ...bill, paid: !bill.paid }); }} onDelete={deleteSpreadsheetRow} /> : route === "tasks" ? <TasksView tasks={data.tasks} onAdd={addTask} onUpdate={updateTask} onToggle={toggleTask} onDelete={deleteTask} /> : route === "finance" ? <FinanceView transactions={data.transactions} bills={data.bills} budgetCategories={data.budgetCategories} onAddTransaction={addTransaction} onUpdateTransaction={updateTransaction} onDeleteTransaction={deleteTransaction} onToggleBill={(id) => { const bill = data.bills.find((item) => item.id === id); if (bill) updateBill({ ...bill, paid: !bill.paid }); }} onAddBill={addBill} onUpdateBill={updateBill} onDeleteBill={deleteBill} onAddBudgetCategory={addBudgetCategory} onUpdateBudgetCategory={updateBudgetCategory} onDeleteBudgetCategory={deleteBudgetCategory} /> : route === "investments" ? <InvestmentsView /> : route === "agenda" ? <AgendaView appointments={data.appointments} onAdd={(item: Appointment) => replace({ appointments: [...data.appointments, item] })} /> : <MoreView documents={data.documents} onAddDocument={(item: DocumentNote) => replace({ documents: [...data.documents, item] })} />, [route, data]);
   if (loading) return <main className="app-shell"><p className="muted">Carregando seus dados…</p></main>;
   return <AppShell route={route} onNavigate={setRoute}><>{message && <div className="card status-message" role="status">{message} <button className="link-button" onClick={() => window.location.reload()}>Tentar novamente</button></div>}{busy && <div className="status-message" role="status">Salvando…</div>}{content}</></AppShell>;
 }

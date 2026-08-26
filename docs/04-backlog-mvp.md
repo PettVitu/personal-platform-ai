@@ -7,6 +7,7 @@
 - tarefas com persistência local;
 - receitas e despesas;
 - contas recorrentes;
+- controle de orçamento diário (categorias de gasto pré-cadastradas + cálculo de "quanto dá pra gastar hoje");
 - agenda manual;
 - documentos textuais;
 - Amarildo simulado;

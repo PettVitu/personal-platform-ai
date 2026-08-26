@@ -48,12 +48,19 @@ export type DocumentNote = {
   aiAccess: boolean;
 };
 
+export type BudgetCategory = {
+  id: string;
+  name: string;
+  monthlyAmount: number;
+};
+
 export type AppData = {
   tasks: Task[];
   transactions: Transaction[];
   bills: RecurringBill[];
   appointments: Appointment[];
   documents: DocumentNote[];
+  budgetCategories: BudgetCategory[];
 };
 
 export type CreateTaskInput = Omit<Task, "id" | "status"> & { status?: TaskStatus };
@@ -62,6 +69,8 @@ export type CreateTransactionInput = Omit<Transaction, "id">;
 export type UpdateTransactionInput = Partial<Omit<Transaction, "id">>;
 export type CreateRecurringBillInput = Omit<RecurringBill, "id" | "paid"> & { paid?: boolean };
 export type UpdateRecurringBillInput = Partial<Omit<RecurringBill, "id">>;
+export type CreateBudgetCategoryInput = Omit<BudgetCategory, "id">;
+export type UpdateBudgetCategoryInput = Partial<Omit<BudgetCategory, "id">>;
 
 export type AssetClass = "acao" | "fii";
 export type Sentiment = "positivo" | "negativo" | "neutro";

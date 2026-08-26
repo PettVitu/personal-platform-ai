@@ -1,9 +1,9 @@
 import { apiRequest, unwrap } from "./api-client";
 import { loadAppData, saveAppData } from "./storage";
 import { seedData } from "./seed";
-import type { AppData, CreateRecurringBillInput, CreateTaskInput, CreateTransactionInput, InvestmentHistoryEntry, InvestmentInsightsResponse, InvestmentSuggestionsResponse, RecurringBill, Task, Transaction, UpdateRecurringBillInput, UpdateTaskInput, UpdateTransactionInput, WatchlistResponse } from "./types";
+import type { AppData, BudgetCategory, CreateBudgetCategoryInput, CreateRecurringBillInput, CreateTaskInput, CreateTransactionInput, InvestmentHistoryEntry, InvestmentInsightsResponse, InvestmentSuggestionsResponse, RecurringBill, Task, Transaction, UpdateBudgetCategoryInput, UpdateRecurringBillInput, UpdateTaskInput, UpdateTransactionInput, WatchlistResponse } from "./types";
 
-type Collection = "tasks" | "transactions" | "bills";
+type Collection = "tasks" | "transactions" | "bills" | "budgetCategories";
 type ApiRepository<T, Create, Update> = {
   list(): Promise<T[]>;
   create(input: Create): Promise<T>;
@@ -23,6 +23,16 @@ function remote<T, Create, Update>(collection: Collection): ApiRepository<T, Cre
 export const taskRepository = remote<Task, CreateTaskInput, UpdateTaskInput>("tasks");
 export const transactionRepository = remote<Transaction, CreateTransactionInput, UpdateTransactionInput>("transactions");
 export const billRepository = remote<RecurringBill, CreateRecurringBillInput, UpdateRecurringBillInput>("bills");
+
+// URL usa hífen ("budget-categories"), a chave de AppData usa camelCase
+// ("budgetCategories") — por isso não dá pra reaproveitar remote() aqui, que
+// assume que o segmento da URL é o nome da coleção.
+export const budgetCategoryRepository: ApiRepository<BudgetCategory, CreateBudgetCategoryInput, UpdateBudgetCategoryInput> = {
+  list: async () => unwrap(await apiRequest<{ data: BudgetCategory[] }>("/api/budget-categories")),
+  create: async (input) => unwrap(await apiRequest<{ data: BudgetCategory }>("/api/budget-categories", { method: "POST", body: JSON.stringify(input) })),
+  update: async (id, input) => unwrap(await apiRequest<{ data: BudgetCategory }>(`/api/budget-categories/${id}`, { method: "PATCH", body: JSON.stringify(input) })),
+  remove: async (id) => { await apiRequest(`/api/budget-categories/${id}`, { method: "DELETE" }); },
+};
 
 export const investmentRepository = {
   suggestions: async () => unwrap(await apiRequest<{ data: InvestmentSuggestionsResponse }>("/api/investments/suggestions")),

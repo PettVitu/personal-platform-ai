@@ -47,6 +47,7 @@ Cada linha é uma coisa concreta que falta. Quando todas as linhas de um módulo
 - [x] persistência real e isolada por usuário (Postgres/Prisma) — falta só credenciais reais para validar ponta a ponta
 - [ ] edição de documentos (hoje só criação)
 - [ ] importação de arquivos para Documentos
+- [x] controle de orçamento diário (Finanças) — categorias de gasto pré-cadastradas + cálculo puro e testado de "quanto dá pra gastar hoje", zerando por dia. Ver [03](03-requisitos-funcionais.md#categorias-de-gasto-diário-e-controle-de-orçamento). Deixado de fora de propósito: visualização "farol" por dia, projeção de longo prazo (até 2 anos), e parcelamento/recorrência em Contas recorrentes
 
 ### Amarildo (assistente de IA)
 

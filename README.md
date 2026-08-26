@@ -94,7 +94,7 @@ src/
 
 Frontend funcional em Next.js. Tarefas, finanças, agenda e documentos persistem em `localStorage`; a API local usa memória de processo. Ainda não há banco definitivo, autenticação, sincronização entre dispositivos ou chamada real de IA — o Amarildo é uma simulação transparente.
 
-Todas as decisões de escopo, princípios e limitações estão documentadas em [`docs/`](docs/README.md).
+Todas as decisões de escopo, princípios e limitações estão documentadas em [`docs/`](docs/README.md) — comece por [`docs/10-visao-final-do-produto.md`](docs/10-visao-final-do-produto.md) para o checklist do que falta em cada módulo.
 
 ## Princípios
 

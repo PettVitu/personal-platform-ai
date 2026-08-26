@@ -7,5 +7,8 @@ export default defineConfig({
   reporter: [["list"]],
   use: { baseURL: "http://127.0.0.1:3100", trace: "on-first-retry", screenshot: "only-on-failure" },
   webServer: { command: "npm.cmd run dev -- -p 3100", url: "http://127.0.0.1:3100", reuseExistingServer: true, timeout: 120000 },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [
+    { name: "setup", testMatch: /auth\.setup\.ts/ },
+    { name: "chromium", testIgnore: /auth\.setup\.ts/, use: { ...devices["Desktop Chrome"], storageState: "playwright/.auth/user.json" }, dependencies: ["setup"] },
+  ],
 });

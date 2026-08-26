@@ -9,6 +9,6 @@ export default defineConfig({
   webServer: { command: "npm.cmd run dev -- -p 3100", url: "http://127.0.0.1:3100", reuseExistingServer: true, timeout: 120000 },
   projects: [
     { name: "setup", testMatch: /auth\.setup\.ts/ },
-    { name: "chromium", testIgnore: /auth\.setup\.ts/, use: { ...devices["Desktop Chrome"], storageState: "playwright/.auth/user.json" }, dependencies: ["setup"] },
+    { name: "chromium", testIgnore: [/auth\.setup\.ts/, /tests[\\/]unit[\\/]/], use: { ...devices["Desktop Chrome"], storageState: "playwright/.auth/user.json" }, dependencies: ["setup"] },
   ],
 });

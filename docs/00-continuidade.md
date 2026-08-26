@@ -30,6 +30,7 @@ Fluxo de branch: **`homolog`** é onde o trabalho acontece; **`main`** é o que 
 - **Investimentos ficam abertos (`/api/investments/*`) sem exigir login no middleware** — não expõem dado pessoal por padrão (usam a watchlist padrão quando não há sessão), mas personalizam quando há. Editar a watchlist (POST/DELETE) exige login mesmo assim.
 - **Rate limiting é feito no Postgres, não em Redis/KV** — não há Redis configurado no projeto, e o middleware roda em Edge (onde o Prisma não conecta), então o limite é aplicado dentro de cada route handler via `src/server/rate-limit.ts`, chamando `rateLimit(request, escopo, { limit, windowMs, userId })` logo após o `getUserId()`. Usa "fixed window": a janela de tempo fica embutida na própria chave (`escopo:identificador:inícioDaJanela`), então cada linha é gravada uma única vez por identificador+janela — um `upsert` atômico basta, sem corrida de leitura-e-reset. Linhas velhas são varridas probabilisticamente (2% das chamadas) em vez de precisar de um cron job. Identificador é o `userId` quando logado, IP (`x-forwarded-for`) quando anônimo.
 - **Exportação/exclusão de dados (LGPD)**: `GET /api/account/export` (baixa um JSON com tudo do usuário) e `DELETE /api/account` (apaga o usuário; cascata pelo schema cuida do resto). UI em Mais → Privacidade e dados (`src/components/MoreView.tsx`). Como a sessão é JWT, ela some só quando expira — por isso `DELETE /api/account` usa `deleteMany` (idempotente) em vez de `delete`, senão um segundo clique com a mesma sessão (usuário já apagado) estoura erro do Prisma em vez de responder 204.
+- **Testes de domínio são Vitest (`npm run test:unit`), separados do Playwright (`npm run test:e2e`)** — ficam em `tests/unit/*.test.ts`. Gotcha real: o `testMatch` padrão do Playwright já casa com `*.test.ts`, então sem o `testIgnore` em `playwright.config.ts` (projeto `chromium`) ele tentava rodar os arquivos do Vitest como se fossem E2E e quebrava com "Vitest cannot be imported in a CommonJS module". `testIgnore` setado no projeto `chromium` **substitui** o do nível raiz em vez de somar — por isso o ignore de `tests/unit` está dentro do array `testIgnore` do projeto, não só no topo do config. Ambiente do Vitest é `jsdom`, mas essa versão de jsdom não expõe `window.localStorage` de forma confiável sob este Node — há um polyfill em `tests/unit/setup.ts` para isso.
 
 ## Credenciais
 
@@ -48,7 +49,7 @@ Ver checklist completo em `docs/10-visao-final-do-produto.md`, seção "Ordem re
 
 ## Como trabalhar aqui
 
-- Sempre rodar `npm run build` (e, se mexeu em API/auth/testes, `npm run test:e2e`) antes de considerar algo pronto.
+- Sempre rodar `npm run build` (e, se mexeu em API/auth/testes, `npm run test:e2e` e `npm run test:unit`) antes de considerar algo pronto.
 - Depois de validar em `homolog`, sincronizar `main` (ver comando acima) pra refletir em produção.
 - Nunca commitar `.env.local` nem qualquer arquivo com segredo solto na pasta (já aconteceu um `client_secret_*.json` do Google cair na raiz do projeto — foi removido, mas fique atento).
 - Ao debugar produção, dá pra usar o Vercel CLI com um token de acesso pessoal do usuário (peça se precisar) — `vercel logs <url> --token <token>` mostra os logs de runtime, incluindo erros do Auth.js/Prisma que não aparecem em lugar nenhum além disso.

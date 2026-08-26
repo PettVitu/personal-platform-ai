@@ -63,7 +63,7 @@ Cada linha é uma coisa concreta que falta. Quando todas as linhas de um módulo
 - [x] histórico de sugestões persistido em banco (Postgres via Prisma)
 - [ ] dividend yield real (bloqueado pelo plano gratuito da Brapi — módulo `defaultKeyStatistics` é pago)
 - [ ] comparação automática entre score passado e retorno real observado depois
-- [ ] watchlist configurável pelo usuário (hoje são 6 tickers fixos no código)
+- [x] watchlist configurável pelo usuário logado (`WatchlistItem` no Postgres), com padrão de 6 tickers para quem não personalizou
 - [ ] explicação via LLM real, mantendo a regra de que a IA nunca calcula o número — [05](05-ia-e-prompts.md#ia-no-conselheiro-de-investimentos)
 
 ## Ordem recomendada
@@ -72,7 +72,7 @@ Cada linha é uma coisa concreta que falta. Quando todas as linhas de um módulo
 2. ~~Deploy~~ — feito: [personal-platform-ai.vercel.app](https://personal-platform-ai.vercel.app), branch `main`, Postgres via pooler do Supabase.
 3. ~~Consertar a suíte E2E~~ — feito, provider de teste em `tests/auth.setup.ts`.
 4. ~~Testes de acesso indevido~~ — feito, `tests/isolation.spec.ts`. Rate limiting ainda falta.
-5. **Conselheiro**: watchlist configurável.
+5. ~~Conselheiro: watchlist configurável~~ — feito, `WatchlistItem` no Postgres.
 6. **IA real** (Amarildo e explicação do conselheiro) — só depois da base de dados e do RAG terem onde se apoiar.
 7. **Harness de trading (Binance)** — projeto novo e separado, só depois de tudo acima.
 

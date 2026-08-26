@@ -1,5 +1,5 @@
 import type { InvestmentNews, Sentiment } from "../../domain/types";
-import { getWatchlist } from "./brapiClient";
+import type { WatchlistEntry } from "./watchlist";
 
 const DEMO_NEWS: InvestmentNews[] = [
   { headline: "Petrobras anuncia novo plano de investimentos no pré-sal", url: "https://example.com/demo/petr4", source: "Demo News", publishedAt: "2026-08-20T09:00:00.000Z", sentiment: "positivo", relatedTickers: ["PETR4"] },
@@ -12,11 +12,11 @@ const DEMO_NEWS: InvestmentNews[] = [
 type MarketauxEntity = { symbol: string; sentiment_score?: number };
 type MarketauxItem = { title: string; url: string; source: string; published_at: string; entities?: MarketauxEntity[] };
 
-export async function fetchNews(): Promise<{ news: InvestmentNews[]; demo: boolean }> {
+export async function fetchNews(watchlist: WatchlistEntry[]): Promise<{ news: InvestmentNews[]; demo: boolean }> {
   const apiKey = process.env.MARKETAUX_API_KEY;
   if (!apiKey) return { news: DEMO_NEWS, demo: true };
   try {
-    const symbols = getWatchlist().map((item) => `${item.ticker}.SA`).join(",");
+    const symbols = watchlist.map((item) => `${item.ticker}.SA`).join(",");
     const response = await fetch(`https://api.marketaux.com/v1/news/all?symbols=${symbols}&language=pt&api_token=${apiKey}`, { cache: "no-store" });
     if (!response.ok) throw new Error(`marketaux respondeu ${response.status}`);
     const body = (await response.json()) as { data?: MarketauxItem[] };

@@ -40,7 +40,7 @@ Módulo separado da organização financeira básica, público e somente informa
 
 Resumo funcional:
 
-- foco em ações e FIIs brasileiros (watchlist fixa nesta primeira versão);
+- foco em ações e FIIs brasileiros, com watchlist configurável por usuário logado (padrão de 6 tickers para quem não personalizou ou não está logado);
 - ingestão de cotação/fundamentos (Brapi) e notícias (Marketaux), com fonte e horário sempre visíveis; quando as chaves de API não estão configuradas, usa dados demonstrativos e sinaliza isso na interface;
 - scoring quantitativo auditável por ativo, combinando fundamentos (dividend yield, P/L) e sentimento de notícia;
 - explicação em texto de por que cada ativo pontuou daquele jeito;

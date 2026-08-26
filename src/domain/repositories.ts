@@ -1,7 +1,7 @@
 import { apiRequest, unwrap } from "./api-client";
 import { loadAppData, saveAppData } from "./storage";
 import { seedData } from "./seed";
-import type { AppData, CreateRecurringBillInput, CreateTaskInput, CreateTransactionInput, InvestmentHistoryEntry, InvestmentSuggestionsResponse, RecurringBill, Task, Transaction, UpdateRecurringBillInput, UpdateTaskInput, UpdateTransactionInput } from "./types";
+import type { AppData, CreateRecurringBillInput, CreateTaskInput, CreateTransactionInput, InvestmentHistoryEntry, InvestmentSuggestionsResponse, RecurringBill, Task, Transaction, UpdateRecurringBillInput, UpdateTaskInput, UpdateTransactionInput, WatchlistResponse } from "./types";
 
 type Collection = "tasks" | "transactions" | "bills";
 type ApiRepository<T, Create, Update> = {
@@ -27,6 +27,9 @@ export const billRepository = remote<RecurringBill, CreateRecurringBillInput, Up
 export const investmentRepository = {
   suggestions: async () => unwrap(await apiRequest<{ data: InvestmentSuggestionsResponse }>("/api/investments/suggestions")),
   history: async () => unwrap(await apiRequest<{ data: InvestmentHistoryEntry[] }>("/api/investments/history")),
+  watchlist: async () => unwrap(await apiRequest<{ data: WatchlistResponse }>("/api/investments/watchlist")),
+  addTicker: async (ticker: string) => unwrap(await apiRequest<{ data: { entries: WatchlistResponse["entries"] } }>("/api/investments/watchlist", { method: "POST", body: JSON.stringify({ ticker }) })),
+  removeTicker: async (ticker: string) => unwrap(await apiRequest<{ data: { entries: WatchlistResponse["entries"] } }>(`/api/investments/watchlist/${ticker}`, { method: "DELETE" })),
 };
 
 export function localRepository() {

@@ -111,6 +111,14 @@ export type InvestmentHistoryEntry = {
   demo: boolean;
 };
 
+export type WatchlistEntry = { ticker: string; name: string; assetClass: AssetClass };
+
+export type WatchlistResponse = {
+  entries: WatchlistEntry[];
+  isDefault: boolean;
+  editable: boolean;
+};
+
 export type ApiErrorKind = "network" | "validation" | "server" | "not-found" | "unknown";
 
 export class DomainApiError extends Error {

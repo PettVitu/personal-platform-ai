@@ -1,33 +1,57 @@
 import { useEffect, useState } from "react";
 import { investmentRepository } from "../domain/repositories";
-import type { InvestmentHistoryEntry, InvestmentSuggestion } from "../domain/types";
+import type { InvestmentHistoryEntry, InvestmentSuggestion, WatchlistResponse } from "../domain/types";
 import { EmptyState, PageIntro } from "./Common";
+import { Icon } from "./Icon";
 
 const formatDateTime = (value: string) => new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }).format(new Date(value));
 
 export function InvestmentsView() {
   const [suggestions, setSuggestions] = useState<InvestmentSuggestion[]>([]);
   const [history, setHistory] = useState<InvestmentHistoryEntry[]>([]);
+  const [watchlist, setWatchlist] = useState<WatchlistResponse | null>(null);
   const [sources, setSources] = useState<string[]>([]);
   const [demo, setDemo] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [watchlistError, setWatchlistError] = useState<string | null>(null);
+
+  async function loadAll() {
+    const [suggestionsResult, watchlistResult] = await Promise.all([investmentRepository.suggestions(), investmentRepository.watchlist()]);
+    setSuggestions(suggestionsResult.suggestions);
+    setSources(suggestionsResult.sources);
+    setDemo(suggestionsResult.demo);
+    setWatchlist(watchlistResult);
+    setHistory(await investmentRepository.history());
+  }
 
   useEffect(() => {
     let active = true;
-    investmentRepository
-      .suggestions()
-      .then(async (result) => {
-        if (!active) return;
-        setSuggestions(result.suggestions);
-        setSources(result.sources);
-        setDemo(result.demo);
-        setHistory(await investmentRepository.history());
-      })
+    loadAll()
       .catch(() => { if (active) setError("Não foi possível carregar as sugestões agora."); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
   }, []);
+
+  async function handleAdd(ticker: string) {
+    setWatchlistError(null);
+    try {
+      await investmentRepository.addTicker(ticker);
+      await loadAll();
+    } catch {
+      setWatchlistError("Não foi possível adicionar esse ticker — confira o formato (ex.: PETR4, MXRF11).");
+    }
+  }
+
+  async function handleRemove(ticker: string) {
+    setWatchlistError(null);
+    try {
+      await investmentRepository.removeTicker(ticker);
+      await loadAll();
+    } catch {
+      setWatchlistError("Não foi possível remover esse ticker agora.");
+    }
+  }
 
   return (
     <>
@@ -38,6 +62,7 @@ export function InvestmentsView() {
       />
       {demo && <div className="card status-message" role="status">Exibindo dados demonstrativos. Configure `BRAPI_TOKEN` e `MARKETAUX_API_KEY` para dados reais.</div>}
       {error && <div className="card status-message" role="status">{error}</div>}
+      {watchlist && <WatchlistPanel watchlist={watchlist} error={watchlistError} onAdd={handleAdd} onRemove={handleRemove} />}
       {loading ? (
         <p className="muted">Calculando sugestões…</p>
       ) : suggestions.length ? (
@@ -50,6 +75,43 @@ export function InvestmentsView() {
       {sources.length > 0 && <p className="muted small-print">Fontes: {sources.join(" · ")}</p>}
       {history.length > 0 && <HistoryPanel entries={history} />}
     </>
+  );
+}
+
+function WatchlistPanel({ watchlist, error, onAdd, onRemove }: { watchlist: WatchlistResponse; error: string | null; onAdd: (ticker: string) => void; onRemove: (ticker: string) => void }) {
+  const [ticker, setTicker] = useState("");
+
+  function submit(event: React.FormEvent) {
+    event.preventDefault();
+    if (!ticker.trim()) return;
+    onAdd(ticker.trim());
+    setTicker("");
+  }
+
+  return (
+    <article className="card list-card watchlist-panel">
+      <div className="card-heading">
+        <h2>Sua watchlist</h2>
+        {watchlist.isDefault && <small className="muted">padrão — adicione um ativo para personalizar</small>}
+      </div>
+      <div className="watchlist-chips">
+        {watchlist.entries.map((entry) => (
+          <span key={entry.ticker} className="watchlist-chip">
+            {entry.ticker}
+            {watchlist.editable && <button type="button" onClick={() => onRemove(entry.ticker)} aria-label={`Remover ${entry.ticker}`}><Icon name="close" /></button>}
+          </span>
+        ))}
+      </div>
+      {watchlist.editable ? (
+        <form className="watchlist-add-form" onSubmit={submit}>
+          <input value={ticker} onChange={(event) => setTicker(event.target.value.toUpperCase())} placeholder="Ex.: BBAS3" maxLength={7} />
+          <button type="submit">Adicionar</button>
+        </form>
+      ) : (
+        <p className="muted small-print">Entre com sua conta para personalizar a watchlist.</p>
+      )}
+      {error && <p className="muted small-print">{error}</p>}
+    </article>
   );
 }
 

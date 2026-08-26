@@ -28,6 +28,7 @@ model User {
   bills         RecurringBill[]
   appointments  Appointment[]
   documents     DocumentNote[]
+  watchlist     WatchlistItem[]
 
   createdAt DateTime @default(now())
 }
@@ -154,6 +155,26 @@ model DocumentNote {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+// Watchlist personalizada por usuário do conselheiro de investimentos. Quem não
+// tem nenhuma linha aqui cai na watchlist padrão fixa no código (ver watchlist.ts).
+model WatchlistItem {
+  id         String    @id @default(cuid())
+  userId     String
+  ticker     String
+  name       String
+  assetClass AssetClass
+  createdAt  DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, ticker])
+}
+
+enum AssetClass {
+  acao
+  fii
 }
 
 // Histórico do conselheiro de investimentos: dado de mercado público, não pertence

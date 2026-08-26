@@ -14,14 +14,17 @@ const testCredentialsProvider =
         Credentials({
           id: "test-credentials",
           name: "Test Credentials",
-          credentials: { secret: { label: "Secret", type: "password" } },
+          credentials: { secret: { label: "Secret", type: "password" }, email: { label: "Email", type: "text" } },
           async authorize(credentials) {
             if (process.env.NODE_ENV === "production") return null;
             if (credentials?.secret !== process.env.E2E_TEST_AUTH_SECRET) return null;
+            const requested = typeof credentials?.email === "string" ? credentials.email : "";
+            // preso a @local.test mesmo fora de produção — não é pra logar como ninguém real
+            const email = requested.endsWith("@local.test") ? requested : "e2e-test@local.test";
             const user = await prisma.user.upsert({
-              where: { email: "e2e-test@local.test" },
+              where: { email },
               update: {},
-              create: { email: "e2e-test@local.test", name: "E2E Test User" },
+              create: { email, name: `Test user (${email})` },
             });
             return { id: user.id, email: user.email, name: user.name };
           },

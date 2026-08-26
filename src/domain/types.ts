@@ -102,6 +102,15 @@ export type InvestmentSuggestionsResponse = {
   sources: string[];
 };
 
+export type InvestmentHistoryEntry = {
+  id: string;
+  ticker: string;
+  score: number;
+  scoreBreakdown: { fundamentals: number; sentiment: number };
+  asOf: string;
+  demo: boolean;
+};
+
 export type ApiErrorKind = "network" | "validation" | "server" | "not-found" | "unknown";
 
 export class DomainApiError extends Error {

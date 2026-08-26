@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { investmentRepository } from "../domain/repositories";
-import type { InvestmentSuggestion } from "../domain/types";
+import type { InvestmentHistoryEntry, InvestmentSuggestion } from "../domain/types";
 import { EmptyState, PageIntro } from "./Common";
+
+const formatDateTime = (value: string) => new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }).format(new Date(value));
 
 export function InvestmentsView() {
   const [suggestions, setSuggestions] = useState<InvestmentSuggestion[]>([]);
+  const [history, setHistory] = useState<InvestmentHistoryEntry[]>([]);
   const [sources, setSources] = useState<string[]>([]);
   const [demo, setDemo] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -14,11 +17,12 @@ export function InvestmentsView() {
     let active = true;
     investmentRepository
       .suggestions()
-      .then((result) => {
+      .then(async (result) => {
         if (!active) return;
         setSuggestions(result.suggestions);
         setSources(result.sources);
         setDemo(result.demo);
+        setHistory(await investmentRepository.history());
       })
       .catch(() => { if (active) setError("Não foi possível carregar as sugestões agora."); })
       .finally(() => { if (active) setLoading(false); });
@@ -44,7 +48,30 @@ export function InvestmentsView() {
         <EmptyState title="Nenhuma sugestão" description="Não há ativos monitorados no momento." />
       )}
       {sources.length > 0 && <p className="muted small-print">Fontes: {sources.join(" · ")}</p>}
+      {history.length > 0 && <HistoryPanel entries={history} />}
     </>
+  );
+}
+
+function HistoryPanel({ entries }: { entries: InvestmentHistoryEntry[] }) {
+  return (
+    <article className="card list-card investments-history">
+      <div className="card-heading">
+        <h2>Histórico recente</h2>
+        <small className="muted">últimas {entries.length} sugestões geradas</small>
+      </div>
+      <ul className="history-list">
+        {entries.slice(0, 20).map((entry) => (
+          <li key={entry.id}>
+            <span className="history-ticker">{entry.ticker}</span>
+            <span className="history-score">{entry.score}/100</span>
+            <span className="muted">fund. {entry.scoreBreakdown.fundamentals} · not. {entry.scoreBreakdown.sentiment}</span>
+            <span className="muted history-time">{formatDateTime(entry.asOf)}{entry.demo ? " · demo" : ""}</span>
+          </li>
+        ))}
+      </ul>
+      <p className="muted small-print">Guardado só nesta sessão do servidor (memória de processo) — ainda sem banco. Serve para comparar, no futuro, cada score com o retorno real observado depois.</p>
+    </article>
   );
 }
 

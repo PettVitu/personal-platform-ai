@@ -1,7 +1,7 @@
 import { apiRequest, unwrap } from "./api-client";
 import { loadAppData, saveAppData } from "./storage";
 import { seedData } from "./seed";
-import type { AppData, CreateRecurringBillInput, CreateTaskInput, CreateTransactionInput, InvestmentSuggestionsResponse, RecurringBill, Task, Transaction, UpdateRecurringBillInput, UpdateTaskInput, UpdateTransactionInput } from "./types";
+import type { AppData, CreateRecurringBillInput, CreateTaskInput, CreateTransactionInput, InvestmentHistoryEntry, InvestmentSuggestionsResponse, RecurringBill, Task, Transaction, UpdateRecurringBillInput, UpdateTaskInput, UpdateTransactionInput } from "./types";
 
 type Collection = "tasks" | "transactions" | "bills";
 type ApiRepository<T, Create, Update> = {
@@ -26,6 +26,7 @@ export const billRepository = remote<RecurringBill, CreateRecurringBillInput, Up
 
 export const investmentRepository = {
   suggestions: async () => unwrap(await apiRequest<{ data: InvestmentSuggestionsResponse }>("/api/investments/suggestions")),
+  history: async () => unwrap(await apiRequest<{ data: InvestmentHistoryEntry[] }>("/api/investments/history")),
 };
 
 export function localRepository() {

@@ -1,5 +1,10 @@
+import NextAuth from "next-auth";
 import { NextResponse } from "next/server";
-import { auth } from "./auth";
+import { authConfig } from "./auth.config";
+
+// Instância própria, construída só a partir da config leve (sem adapter/Prisma)
+// — ver auth.config.ts. Não importar "./auth" aqui.
+const { auth } = NextAuth(authConfig);
 
 export default auth((request) => {
   if (request.auth) return;

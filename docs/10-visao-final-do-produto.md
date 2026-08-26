@@ -64,7 +64,7 @@ Cada linha é uma coisa concreta que falta. Quando todas as linhas de um módulo
 - [ ] dividend yield real (bloqueado pelo plano gratuito da Brapi — módulo `defaultKeyStatistics` é pago)
 - [x] comparação automática entre score passado e retorno real observado depois — `InvestmentHistoryEntry` guarda `priceAtScoring`; a cada leitura do histórico, entradas reais (não-demo) com 7+ dias e ainda não avaliadas buscam o preço atual na Brapi e gravam `realizedReturnPct`/`evaluatedAt`. UI mostra o retorno e se o score "acertou" a direção (`src/domain/investment-evaluation.ts`)
 - [x] watchlist configurável pelo usuário logado (`WatchlistItem` no Postgres), com padrão de 6 tickers para quem não personalizou
-- [ ] explicação via LLM real, mantendo a regra de que a IA nunca calcula o número — [05](05-ia-e-prompts.md#ia-no-conselheiro-de-investimentos)
+- [~] explicação via LLM real — **adiado por decisão de custo** (API de LLM em produção cobra por chamada, nenhuma assinatura cobre isso). No lugar, [x] análise estatística determinística (Apriori) sobre o histórico avaliado, sem depender de API paga — `src/server/investments/apriori.ts` e `insights.ts`, painel "Análise estatística" na UI. Ver decisão em [05](05-ia-e-prompts.md#ia-no-conselheiro-de-investimentos)
 
 ## Ordem recomendada
 
@@ -77,8 +77,8 @@ Cada linha é uma coisa concreta que falta. Quando todas as linhas de um módulo
 7. ~~Testes automatizados de domínio~~ — feito, Vitest em `tests/unit/`.
 8. ~~Acessibilidade auditada~~ — feito, ver notas na checklist acima.
 9. ~~Comparação score histórico vs. retorno real~~ — feito, ver `src/server/investments/history.ts`.
-10. **IA real** (Amarildo e explicação do conselheiro) — só depois da base de dados e do RAG terem onde se apoiar. Único item restante do checklist de LGPD/qualidade antes disso.
-11. **Harness de trading (Binance)** — projeto novo e separado, só depois de tudo acima.
+10. ~~Análise estatística (Apriori) no lugar do LLM~~ — feito, ver `src/server/investments/apriori.ts`/`insights.ts`. IA real com LLM (Amarildo e explicação do conselheiro) fica **adiada por decisão de custo** — ver [09](09-investimentos-e-harness.md#decisão-sem-llmagente-conversacional-por-agora) — só volta à mesa se/quando fizer sentido pagar por chamadas de API.
+11. **Harness de trading (Binance)** — projeto novo e separado, só depois de tudo acima. Único item que resta no roadmap além de deixar o histórico acumular volume e decidir sobre IA real.
 
 ## Notas de deploy (Vercel + Supabase)
 

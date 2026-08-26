@@ -21,7 +21,7 @@ export function isValidTicker(value: string): boolean {
 
 // Heurística B3: FII/fundo geralmente termina em 11 (nem sempre — units e BDRs
 // também usam 11 —, mas é a melhor aproximação sem consultar um cadastro real).
-function guessAssetClass(ticker: string): AssetClass {
+export function guessAssetClass(ticker: string): AssetClass {
   return ticker.endsWith("11") ? "fii" : "acao";
 }
 

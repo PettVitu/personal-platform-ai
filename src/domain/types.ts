@@ -114,6 +114,20 @@ export type InvestmentHistoryEntry = {
   evaluatedAt: string | null;
 };
 
+export type InvestmentInsight = {
+  conditions: string[];
+  outcome: "retorno_positivo" | "retorno_estavel_ou_negativo";
+  support: number;
+  confidence: number;
+  lift: number;
+};
+
+export type InvestmentInsightsResponse = {
+  insights: InvestmentInsight[];
+  sampleSize: number;
+  minSampleSize: number;
+};
+
 export type WatchlistEntry = { ticker: string; name: string; assetClass: AssetClass };
 
 export type WatchlistResponse = {

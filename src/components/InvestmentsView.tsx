@@ -1,15 +1,31 @@
 import { useEffect, useState } from "react";
 import { evaluateScoreCall } from "../domain/investment-evaluation";
 import { investmentRepository } from "../domain/repositories";
-import type { InvestmentHistoryEntry, InvestmentSuggestion, WatchlistResponse } from "../domain/types";
+import type { InvestmentHistoryEntry, InvestmentInsightsResponse, InvestmentSuggestion, WatchlistResponse } from "../domain/types";
 import { EmptyState, PageIntro } from "./Common";
 import { Icon } from "./Icon";
 
 const formatDateTime = (value: string) => new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }).format(new Date(value));
 
+const CONDITION_LABELS: Record<string, string> = {
+  fundamentos_alto: "fundamentos altos",
+  fundamentos_medio: "fundamentos medianos",
+  fundamentos_baixo: "fundamentos fracos",
+  noticia_alto: "notícias positivas",
+  noticia_medio: "notícias neutras",
+  noticia_baixo: "notícias negativas",
+  acao: "é ação",
+  fii: "é FII",
+};
+const OUTCOME_LABELS: Record<string, string> = {
+  retorno_positivo: "retorno positivo depois",
+  retorno_estavel_ou_negativo: "retorno estável ou negativo depois",
+};
+
 export function InvestmentsView() {
   const [suggestions, setSuggestions] = useState<InvestmentSuggestion[]>([]);
   const [history, setHistory] = useState<InvestmentHistoryEntry[]>([]);
+  const [insights, setInsights] = useState<InvestmentInsightsResponse | null>(null);
   const [watchlist, setWatchlist] = useState<WatchlistResponse | null>(null);
   const [sources, setSources] = useState<string[]>([]);
   const [demo, setDemo] = useState(false);
@@ -24,6 +40,7 @@ export function InvestmentsView() {
     setDemo(suggestionsResult.demo);
     setWatchlist(watchlistResult);
     setHistory(await investmentRepository.history());
+    setInsights(await investmentRepository.insights());
   }
 
   useEffect(() => {
@@ -74,6 +91,7 @@ export function InvestmentsView() {
         <EmptyState title="Nenhuma sugestão" description="Não há ativos monitorados no momento." />
       )}
       {sources.length > 0 && <p className="muted small-print">Fontes: {sources.join(" · ")}</p>}
+      {insights && <InsightsPanel result={insights} />}
       {history.length > 0 && <HistoryPanel entries={history} />}
     </>
   );
@@ -112,6 +130,34 @@ function WatchlistPanel({ watchlist, error, onAdd, onRemove }: { watchlist: Watc
         <p className="muted small-print">Entre com sua conta para personalizar a watchlist.</p>
       )}
       {error && <p className="muted small-print">{error}</p>}
+    </article>
+  );
+}
+
+function InsightsPanel({ result }: { result: InvestmentInsightsResponse }) {
+  return (
+    <article className="card list-card investments-history">
+      <div className="card-heading">
+        <h2>Análise estatística</h2>
+        <small className="muted">{result.sampleSize} sugestões avaliadas até agora</small>
+      </div>
+      {result.insights.length > 0 ? (
+        <>
+          <ul className="history-list">
+            {result.insights.map((insight, index) => (
+              <li key={index}>
+                <span>
+                  Quando {insight.conditions.map((item) => CONDITION_LABELS[item] ?? item).join(" e ")} → {OUTCOME_LABELS[insight.outcome] ?? insight.outcome}
+                </span>
+                <span className="muted">confiança {(insight.confidence * 100).toFixed(0)}% · suporte {(insight.support * 100).toFixed(0)}% · lift {insight.lift.toFixed(1)}x</span>
+              </li>
+            ))}
+          </ul>
+          <p className="muted small-print">Regras de associação (Apriori) mineradas sobre o histórico real avaliado. Não é previsão nem recomendação — é um padrão estatístico observado até agora, que pode mudar conforme mais dados chegam.</p>
+        </>
+      ) : (
+        <EmptyState title="Ainda não há dados suficientes" description={`É preciso pelo menos ${result.minSampleSize} sugestões reais com retorno já avaliado (7+ dias) para começar a achar padrões. Hoje há ${result.sampleSize}.`} />
+      )}
     </article>
   );
 }

@@ -119,7 +119,7 @@ export type WatchlistResponse = {
   editable: boolean;
 };
 
-export type ApiErrorKind = "network" | "validation" | "server" | "not-found" | "unknown";
+export type ApiErrorKind = "network" | "validation" | "server" | "not-found" | "rate-limited" | "unknown";
 
 export class DomainApiError extends Error {
   constructor(public readonly kind: ApiErrorKind, message: string, public readonly status?: number) {

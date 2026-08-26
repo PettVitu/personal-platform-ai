@@ -33,8 +33,8 @@ Cada linha é uma coisa concreta que falta. Quando todas as linhas de um módulo
 - [x] criptografia em trânsito (HTTPS) — em produção em [personal-platform-ai.vercel.app](https://personal-platform-ai.vercel.app), HTTPS automático da Vercel
 - [ ] criptografia em repouso no banco — depende de configuração do Supabase
 - [x] sincronização real entre dispositivos — consequência do banco compartilhado, já validada
-- [ ] exportação e exclusão de dados verificáveis pelo usuário (LGPD)
-- [ ] rate limiting e logs sem dado sensível
+- [x] exportação e exclusão de dados verificáveis pelo usuário (LGPD) — `GET /api/account/export` baixa um JSON com tudo (usuário + tarefas, lançamentos, contas, compromissos, documentos, watchlist); `DELETE /api/account` apaga o usuário e cascateia o resto pelo schema. UI em Mais → Privacidade e dados.
+- [ ] rate limiting em todas as rotas ([x] tasks/transactions/bills/investments/account, feito) e logs sem dado sensível (logs ainda não auditados)
 - [x] suíte E2E consertada — provider `Credentials` só de teste (`E2E_TEST_AUTH_SECRET`, nunca em produção) autentica via `tests/auth.setup.ts` sem depender de conta Google real
 - [x] testes de acesso indevido — `tests/isolation.spec.ts` confirma que usuário B recebe 404 tentando ler/editar/apagar dado do usuário A, e 401 sem sessão nenhuma
 - [ ] testes automatizados de domínio, além dos E2E já existentes
@@ -73,8 +73,10 @@ Cada linha é uma coisa concreta que falta. Quando todas as linhas de um módulo
 3. ~~Consertar a suíte E2E~~ — feito, provider de teste em `tests/auth.setup.ts`.
 4. ~~Testes de acesso indevido~~ — feito, `tests/isolation.spec.ts`. Rate limiting ainda falta.
 5. ~~Conselheiro: watchlist configurável~~ — feito, `WatchlistItem` no Postgres.
-6. **IA real** (Amarildo e explicação do conselheiro) — só depois da base de dados e do RAG terem onde se apoiar.
-7. **Harness de trading (Binance)** — projeto novo e separado, só depois de tudo acima.
+6. ~~Rate limiting + exportação/exclusão de dados (LGPD)~~ — feito, ver `src/server/rate-limit.ts` e `src/app/api/account/*`. Falta só auditar logs por dado sensível.
+7. **Testes automatizados de domínio, acessibilidade, comparação score vs. retorno real** — nessa ordem ou conforme pedido.
+8. **IA real** (Amarildo e explicação do conselheiro) — só depois da base de dados e do RAG terem onde se apoiar.
+9. **Harness de trading (Binance)** — projeto novo e separado, só depois de tudo acima.
 
 ## Notas de deploy (Vercel + Supabase)
 

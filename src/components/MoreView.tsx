@@ -4,11 +4,50 @@ import { Button, EmptyState, PageIntro } from "./Common";
 import { Icon } from "./Icon";
 
 export function MoreView({ documents, onAddDocument }: { documents: DocumentNote[]; onAddDocument: (item: DocumentNote) => void }) {
-  const [active, setActive] = useState<"more" | "assistant" | "rewrite" | "documents">("more"); const [text, setText] = useState(""); const [result, setResult] = useState("");
+  const [active, setActive] = useState<"more" | "assistant" | "rewrite" | "documents" | "privacy">("more"); const [text, setText] = useState(""); const [result, setResult] = useState("");
   if (active === "assistant") return <Assistant onBack={() => setActive("more")} />;
   if (active === "rewrite") return <Rewrite text={text} setText={setText} result={result} onRewrite={() => setResult(text.trim() ? `Versão revisada:\n\n${text.trim()}\n\nO texto foi simplificado nesta demonstração. Revise antes de salvar.` : "Digite um texto para começar.")} onBack={() => setActive("more")} />;
   if (active === "documents") return <Documents documents={documents} onAddDocument={onAddDocument} onBack={() => setActive("more")} />;
-  return <><PageIntro eyebrow="Espaço pessoal" title="Mais" description="Ferramentas complementares para organizar e consultar suas informações." /><section className="more-grid"><button className="feature-card" onClick={() => setActive("assistant")}><span className="feature-icon assistant"><Icon name="assistant" /></span><strong>Conversar com Amarildo</strong><small>Consulte seus dados e organize o próximo passo.</small><Icon name="arrow" /></button><button className="feature-card" onClick={() => setActive("rewrite")}><span className="feature-icon">Aa</span><strong>Reformular texto</strong><small>Corrija, simplifique ou resuma sem perder o original.</small><Icon name="arrow" /></button><button className="feature-card" onClick={() => setActive("documents")}><span className="feature-icon">□</span><strong>Documentos</strong><small>{documents.length} documento(s) salvo(s) neste dispositivo.</small><Icon name="arrow" /></button></section><section className="card settings-card"><p className="eyebrow">Privacidade</p><h2>Seus dados ficam no dispositivo</h2><p className="muted">Esta primeira versão usa armazenamento local. Ainda não há sincronização, conta ou envio automático para serviços externos.</p></section></>;
+  if (active === "privacy") return <Privacy onBack={() => setActive("more")} />;
+  return <><PageIntro eyebrow="Espaço pessoal" title="Mais" description="Ferramentas complementares para organizar e consultar suas informações." /><section className="more-grid"><button className="feature-card" onClick={() => setActive("assistant")}><span className="feature-icon assistant"><Icon name="assistant" /></span><strong>Conversar com Amarildo</strong><small>Consulte seus dados e organize o próximo passo.</small><Icon name="arrow" /></button><button className="feature-card" onClick={() => setActive("rewrite")}><span className="feature-icon">Aa</span><strong>Reformular texto</strong><small>Corrija, simplifique ou resuma sem perder o original.</small><Icon name="arrow" /></button><button className="feature-card" onClick={() => setActive("documents")}><span className="feature-icon">□</span><strong>Documentos</strong><small>{documents.length} documento(s) salvo(s) neste dispositivo.</small><Icon name="arrow" /></button><button className="feature-card" onClick={() => setActive("privacy")}><span className="feature-icon">⇩</span><strong>Privacidade e dados</strong><small>Baixe uma cópia dos seus dados ou exclua sua conta.</small><Icon name="arrow" /></button></section><section className="card settings-card"><p className="eyebrow">Privacidade</p><h2>Seus dados ficam com você</h2><p className="muted">Tarefas, finanças, agenda e documentos ficam salvos na sua conta, isolados dos outros usuários. Use “Privacidade e dados” para baixar ou apagar tudo quando quiser.</p></section></>;
+}
+
+function Privacy({ onBack }: { onBack: () => void }) {
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+
+  async function exportData() {
+    setBusy(true); setMessage(null);
+    try {
+      const response = await fetch("/api/account/export");
+      if (!response.ok) throw new Error(response.status === 429 ? "Muitas tentativas. Aguarde um minuto e tente de novo." : "Não foi possível gerar a exportação.");
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url; link.download = "meus-dados.json"; link.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Não foi possível gerar a exportação.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function deleteAccount() {
+    const typed = window.prompt('Esta ação apaga sua conta e todos os seus dados (tarefas, finanças, agenda, documentos e watchlist) para sempre. Não tem como desfazer.\n\nDigite EXCLUIR para confirmar.');
+    if (typed !== "EXCLUIR") return;
+    setBusy(true); setMessage(null);
+    try {
+      const response = await fetch("/api/account", { method: "DELETE" });
+      if (!response.ok) throw new Error(response.status === 429 ? "Muitas tentativas. Aguarde um minuto e tente de novo." : "Não foi possível excluir a conta.");
+      window.location.href = "/api/auth/signout?callbackUrl=/";
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Não foi possível excluir a conta.");
+      setBusy(false);
+    }
+  }
+
+  return <><button className="back-link" onClick={onBack}>← Voltar</button><PageIntro eyebrow="LGPD" title="Privacidade e dados" description="Baixe uma cópia de tudo que guardamos sobre você, ou apague sua conta e todos os dados associados." />{message && <div className="card status-message" role="status">{message}</div>}<section className="card settings-card"><p className="eyebrow">Exportar</p><h2>Baixar meus dados</h2><p className="muted">Gera um arquivo com suas tarefas, lançamentos, contas, compromissos, documentos e watchlist do conselheiro.</p><Button variant="secondary" onClick={exportData}>{busy ? "Gerando…" : "Baixar meus dados"}</Button></section><section className="card settings-card"><p className="eyebrow">Excluir</p><h2>Excluir minha conta</h2><p className="muted">Remove sua conta e todos os dados associados de forma permanente. Não tem como desfazer.</p><Button variant="ghost" onClick={deleteAccount}>{busy ? "Excluindo…" : "Excluir minha conta"}</Button></section></>;
 }
 
 function Assistant({ onBack }: { onBack: () => void }) {

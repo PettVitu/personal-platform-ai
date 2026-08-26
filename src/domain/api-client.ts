@@ -14,7 +14,7 @@ export async function apiRequest<T>(path: string, init: RequestInit = {}, timeou
     const body = response.status === 204 ? undefined : await response.json().catch(() => undefined);
     if (!response.ok) {
       const message = body && typeof body.error === "string" ? body.error : "Não foi possível concluir a operação.";
-      const kind = response.status === 404 ? "not-found" : response.status >= 500 ? "server" : "validation";
+      const kind = response.status === 404 ? "not-found" : response.status === 429 ? "rate-limited" : response.status >= 500 ? "server" : "validation";
       throw new DomainApiError(kind, message, response.status);
     }
     return body as T;

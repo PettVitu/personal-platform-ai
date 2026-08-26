@@ -177,6 +177,17 @@ enum AssetClass {
   fii
 }
 
+// Contador de rate limiting. Uma linha por (escopo + identificador + janela de tempo);
+// a janela fica embutida na própria chave, então nunca precisa de reset — só cresce e
+// é limpa por rate-limit.ts. Não pertence a usuário nenhum, é infraestrutura.
+model RateLimitEntry {
+  key         String   @id
+  count       Int      @default(1)
+  windowStart DateTime
+
+  @@index([windowStart])
+}
+
 // Histórico do conselheiro de investimentos: dado de mercado público, não pertence
 // a um usuário específico — por isso sem userId, diferente dos modelos acima.
 model InvestmentHistoryEntry {

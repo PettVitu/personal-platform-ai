@@ -7,15 +7,18 @@
 .loading-line{display:flex;align-items:center;gap:8px}.spinner{width:15px;height:15px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;display:inline-block;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.spinner{animation:none}}
 .theme-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.theme-option{border:1px solid var(--border);background:var(--surface);color:var(--text);padding:10px 14px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer}.theme-option.active{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 
-/* Escuro (verde) — mesma identidade de marca, fundo invertido. */
-:root[data-theme="dark"]{--bg:#0f1512;--surface:#161f19;--surface-alt:#0b110d;--surface-muted:#1e2a22;--border:#293830;--line:#293830;--text:#eaf3ec;--muted:#93aa9b;--accent:#4ad295;--accent-hover:#3ab883;--accent-soft:#1c3327;--on-accent:#04140c;--danger:#ff8080;--success:#4ad295;--positive:#4ad295;--negative:#ff8080;--warning:#f2b84b;--focus-ring:#4ad295;--check-border:#3c4d43;--input-bg:#121a15;--card-hover-border:#3c4d43;--shadow:#00000055;--table-header-bg:#1a241d;--table-hover-bg:#1c2820}
+/* Escuro (verde) — mesma identidade de marca, fundo invertido. Tons abaixados
+   de propósito (nem fundo preto puro, nem texto branco puro, nem verde muito
+   saturado) pra não cansar a vista em uso prolongado. */
+:root[data-theme="dark"]{--bg:#141a16;--surface:#1c2620;--surface-alt:#10150f;--surface-muted:#232f27;--border:#2c3a30;--line:#2c3a30;--text:#cfdad1;--muted:#8a9c8f;--accent:#43b382;--accent-hover:#379470;--accent-soft:#1e3327;--on-accent:#0a140f;--danger:#e5817f;--success:#43b382;--positive:#43b382;--negative:#e5817f;--warning:#dba64f;--focus-ring:#43b382;--check-border:#3c4d43;--input-bg:#181f1a;--card-hover-border:#3c4d43;--shadow:#00000055;--table-header-bg:#1e2822;--table-hover-bg:#212c25}
 
-/* Cyberpunk — roxo neon com ciano como acento secundário (paleta clássica do gênero). */
-:root[data-theme="cyberpunk"]{--bg:#0a0714;--surface:#160f28;--surface-alt:#08051a;--surface-muted:#1e1536;--border:#3d2a5e;--line:#3d2a5e;--text:#f1e9ff;--muted:#a893c9;--accent:#c94dff;--accent-hover:#b23bee;--accent-soft:#2a1b45;--on-accent:#0a0714;--danger:#ff2e63;--success:#2de2e6;--positive:#2de2e6;--negative:#ff2e63;--warning:#f9e547;--focus-ring:#2de2e6;--check-border:#4a3574;--input-bg:#120b22;--card-hover-border:#7a4fd4;--shadow:#c94dff33;--table-header-bg:#1a1030;--table-hover-bg:#1e1438}
+/* Cyberpunk — roxo neon com ciano como acento secundário (paleta clássica do
+   gênero), mas com brilho/saturação reduzidos e o glow bem mais discreto —
+   o efeito "neon" fica na cor e no monoespaçado, não em piscar a vista. */
+:root[data-theme="cyberpunk"]{--bg:#120c1e;--surface:#1c1533;--surface-alt:#0d0919;--surface-muted:#241b40;--border:#3a2c56;--line:#3a2c56;--text:#dfd7ef;--muted:#9c8ebd;--accent:#b467e8;--accent-hover:#a052d9;--accent-soft:#271c40;--on-accent:#120c1e;--danger:#e0637f;--success:#4bb9bd;--positive:#4bb9bd;--negative:#e0637f;--warning:#d8c258;--focus-ring:#4bb9bd;--check-border:#463a63;--input-bg:#16102a;--card-hover-border:#6b4f97;--shadow:#b467e822;--table-header-bg:#1e1638;--table-hover-bg:#221a3d}
 :root[data-theme="cyberpunk"] body{font-family:Consolas,"SFMono-Regular",ui-monospace,monospace}
-:root[data-theme="cyberpunk"] .primary-button,:root[data-theme="cyberpunk"] .brand-mark,:root[data-theme="cyberpunk"] .feature-icon.assistant{box-shadow:0 0 14px var(--accent)}
-:root[data-theme="cyberpunk"] .nav-item.active{box-shadow:inset 3px 0 var(--accent),0 0 10px -2px var(--accent)}
-:root[data-theme="cyberpunk"] h1,:root[data-theme="cyberpunk"] .eyebrow{text-shadow:0 0 16px color-mix(in srgb,var(--accent) 55%,transparent)}
-:root[data-theme="cyberpunk"] .check-button.checked,:root[data-theme="cyberpunk"] .task-row.completed .check-button{box-shadow:0 0 10px var(--accent)}
+:root[data-theme="cyberpunk"] .primary-button,:root[data-theme="cyberpunk"] .brand-mark,:root[data-theme="cyberpunk"] .feature-icon.assistant{box-shadow:0 0 6px color-mix(in srgb,var(--accent) 60%,transparent)}
+:root[data-theme="cyberpunk"] .nav-item.active{box-shadow:inset 3px 0 var(--accent)}
+:root[data-theme="cyberpunk"] .check-button.checked,:root[data-theme="cyberpunk"] .task-row.completed .check-button{box-shadow:0 0 5px color-mix(in srgb,var(--accent) 60%,transparent)}
 
 .watchlist-panel{margin-bottom:20px}.watchlist-chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}.watchlist-chip{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft,#eef2f0);border:1px solid var(--line);border-radius:999px;padding:5px 6px 5px 12px;font-size:12px;font-weight:700}.watchlist-chip button{border:0;background:transparent;display:inline-flex;align-items:center;padding:2px;cursor:pointer;color:var(--muted)}.watchlist-chip button:hover{color:var(--negative)}.watchlist-add-form{display:flex;gap:8px;margin-top:4px}.watchlist-add-form input{flex:0 0 140px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;text-transform:uppercase}.watchlist-add-form button{border:0;background:var(--accent);color:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer}

@@ -38,7 +38,7 @@ Cada linha é uma coisa concreta que falta. Quando todas as linhas de um módulo
 - [x] suíte E2E consertada — provider `Credentials` só de teste (`E2E_TEST_AUTH_SECRET`, nunca em produção) autentica via `tests/auth.setup.ts` sem depender de conta Google real
 - [x] testes de acesso indevido — `tests/isolation.spec.ts` confirma que usuário B recebe 404 tentando ler/editar/apagar dado do usuário A, e 401 sem sessão nenhuma
 - [x] testes automatizados de domínio, além dos E2E já existentes — Vitest (`npm run test:unit`) cobrindo `src/server/validation.ts`, o algoritmo de scoring do conselheiro (`src/server/investments/scoring.ts`), validação de ticker da watchlist, mapeamento de erros da API (`src/domain/api-client.ts`) e o repositório local (`src/domain/repositories.ts`), 31 testes
-- [ ] acessibilidade auditada (foco visível, contraste, navegação por teclado, `prefers-reduced-motion`) — [02](02-fluxos-e-ux.md)
+- [x] acessibilidade auditada (foco visível, contraste, navegação por teclado, `prefers-reduced-motion`) — [02](02-fluxos-e-ux.md). Auditoria encontrou e corrigiu: variáveis CSS `--line`/`--positive`/`--negative` usadas mas nunca definidas (bordas e cores da Planilha renderizando sem cor); `--muted` e `--warning` abaixo do contraste mínimo AA (4.5:1) em texto normal; linha da tabela da Planilha clicável só por mouse (sem `tabIndex`/`role`/teclado); nav ativo sem `aria-current`; busca e filtro da Planilha e input de ticker sem label acessível. `prefers-reduced-motion` já existia e estava adequado.
 
 ### Tarefas, Finanças, Agenda, Documentos
 
@@ -75,9 +75,10 @@ Cada linha é uma coisa concreta que falta. Quando todas as linhas de um módulo
 5. ~~Conselheiro: watchlist configurável~~ — feito, `WatchlistItem` no Postgres.
 6. ~~Rate limiting + exportação/exclusão de dados (LGPD)~~ — feito, ver `src/server/rate-limit.ts` e `src/app/api/account/*`. Falta só auditar logs por dado sensível.
 7. ~~Testes automatizados de domínio~~ — feito, Vitest em `tests/unit/`.
-8. **Acessibilidade, comparação score vs. retorno real** — nessa ordem ou conforme pedido.
-9. **IA real** (Amarildo e explicação do conselheiro) — só depois da base de dados e do RAG terem onde se apoiar.
-10. **Harness de trading (Binance)** — projeto novo e separado, só depois de tudo acima.
+8. ~~Acessibilidade auditada~~ — feito, ver notas na checklist acima.
+9. **Comparação score histórico vs. retorno real** — próximo item.
+10. **IA real** (Amarildo e explicação do conselheiro) — só depois da base de dados e do RAG terem onde se apoiar.
+11. **Harness de trading (Binance)** — projeto novo e separado, só depois de tudo acima.
 
 ## Notas de deploy (Vercel + Supabase)
 

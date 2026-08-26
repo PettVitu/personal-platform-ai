@@ -104,7 +104,7 @@ function WatchlistPanel({ watchlist, error, onAdd, onRemove }: { watchlist: Watc
       </div>
       {watchlist.editable ? (
         <form className="watchlist-add-form" onSubmit={submit}>
-          <input value={ticker} onChange={(event) => setTicker(event.target.value.toUpperCase())} placeholder="Ex.: BBAS3" maxLength={7} />
+          <input value={ticker} onChange={(event) => setTicker(event.target.value.toUpperCase())} placeholder="Ex.: BBAS3" aria-label="Adicionar ticker à watchlist" maxLength={7} />
           <button type="submit">Adicionar</button>
         </form>
       ) : (

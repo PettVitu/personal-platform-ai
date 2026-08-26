@@ -35,5 +35,5 @@ export function AppShell({ route, onNavigate, children }: { route: AppRoute; onN
 }
 
 function NavItem({ item, active, mobile = false, onClick }: { item: typeof navItems[number]; active: boolean; mobile?: boolean; onClick: () => void }) {
-  return <button className={`${mobile ? "mobile-nav-item" : "nav-item"} ${active ? "active" : ""}`} onClick={onClick}><Icon name={item.icon} /><span>{item.label}</span></button>;
+  return <button className={`${mobile ? "mobile-nav-item" : "nav-item"} ${active ? "active" : ""}`} onClick={onClick} aria-current={active ? "page" : undefined}><Icon name={item.icon} /><span>{item.label}</span></button>;
 }

@@ -23,7 +23,7 @@ export function AppShell({ route, onNavigate, children }: { route: AppRoute; onN
         <nav className="nav-list" aria-label="Navegação principal">
           {navItems.map((item) => <NavItem key={item.route} item={item} active={route === item.route} onClick={() => onNavigate(item.route)} />)}
         </nav>
-        <div className="sidebar-bottom"><div className="privacy-box"><span className="privacy-dot" /> Dados salvos neste dispositivo</div><button className="settings-link" onClick={() => onNavigate("more")}>Configurações</button></div>
+        <div className="sidebar-bottom"><div className="privacy-box"><span className="privacy-dot" /> Dados isolados na sua conta</div><button className="settings-link" onClick={() => onNavigate("more")}>Configurações</button><a className="settings-link" href="/api/auth/signout">Sair</a></div>
       </aside>
       <main className="main-content">
         <header className="topbar"><button className="mobile-menu" onClick={() => onNavigate("more")} aria-label="Abrir menu"><Icon name="menu" /></button><div className="breadcrumb"><span className="muted">Personal</span><span>/</span><strong>{activeLabel}</strong></div><button className="assistant-link" onClick={() => onNavigate("more")}><Icon name="assistant" /> Amarildo</button></header>

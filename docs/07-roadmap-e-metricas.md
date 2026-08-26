@@ -6,7 +6,7 @@ Dashboard, tarefas, finanças básicas, agenda, documentos textuais, PWA e API l
 
 ## Fase 2 — Persistência real
 
-Banco, autenticação, autorização, migrações, backups e sincronização.
+Banco (Postgres via Prisma), autenticação e autorização (Google via Auth.js) e isolamento por usuário — implementados no código; falta configurar instância real (Supabase) e client OAuth para rodar em produção. Migrações versionadas, backups e sincronização entre dispositivos seguem como próximo passo depois disso.
 
 ## Fase 3 — IA controlada
 
@@ -18,7 +18,7 @@ Observabilidade, incidentes, exportação, exclusão, acessibilidade e testes de
 
 ## Fase 5 — Conselheiro de investimentos
 
-Ingestão de dados de mercado e notícias (com fallback demonstrativo), pipeline de scoring quantitativo, painel de sugestões de ações e FIIs sem execução automática. Ver [09 — Conselheiro de investimentos](09-investimentos-e-harness.md). Entregue nesta primeira versão com dados demonstrativos; falta plugar chaves reais de API e, depois, histórico/feedback das sugestões.
+Ingestão de dados de mercado e notícias (com fallback demonstrativo), pipeline de scoring quantitativo, painel de sugestões de ações e FIIs sem execução automática, histórico persistido em banco. Ver [09 — Conselheiro de investimentos](09-investimentos-e-harness.md). Validado com chaves reais de Brapi e Marketaux; falta watchlist configurável e comparação automática do histórico com o retorno real.
 
 ## Depois do conselheiro
 

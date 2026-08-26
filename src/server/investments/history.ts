@@ -1,35 +1,29 @@
-import { randomUUID } from "node:crypto";
 import type { InvestmentHistoryEntry, InvestmentSuggestion } from "../../domain/types";
+import { prisma } from "../db";
 
 const MAX_ENTRIES = 200;
 
-// Adaptador temporário em memória. Deve ser substituído por persistência real
-// antes de comparar sugestões passadas com resultado de mercado observado depois.
-// Guardado em globalThis porque o Next.js empacota cada rota de API separadamente
-// em desenvolvimento: um módulo comum importado por rotas diferentes acaba duplicado,
-// e cada cópia teria seu próprio array se o estado vivesse numa variável de módulo.
-declare global {
-  // eslint-disable-next-line no-var
-  var __investmentHistory: InvestmentHistoryEntry[] | undefined;
+export async function recordSuggestions(suggestions: InvestmentSuggestion[], demo: boolean): Promise<void> {
+  await prisma.investmentHistoryEntry.createMany({
+    data: suggestions.map((item) => ({
+      ticker: item.ticker,
+      score: item.score,
+      fundamentals: item.scoreBreakdown.fundamentals,
+      sentiment: item.scoreBreakdown.sentiment,
+      asOf: new Date(item.asOf),
+      demo,
+    })),
+  });
 }
 
-function store(): InvestmentHistoryEntry[] {
-  if (!globalThis.__investmentHistory) globalThis.__investmentHistory = [];
-  return globalThis.__investmentHistory;
-}
-
-export function recordSuggestions(suggestions: InvestmentSuggestion[], demo: boolean): void {
-  const entries: InvestmentHistoryEntry[] = suggestions.map((item) => ({
-    id: randomUUID(),
-    ticker: item.ticker,
-    score: item.score,
-    scoreBreakdown: item.scoreBreakdown,
-    asOf: item.asOf,
-    demo,
+export async function getHistory(): Promise<InvestmentHistoryEntry[]> {
+  const rows = await prisma.investmentHistoryEntry.findMany({ orderBy: { createdAt: "desc" }, take: MAX_ENTRIES });
+  return rows.map((row) => ({
+    id: row.id,
+    ticker: row.ticker,
+    score: row.score,
+    scoreBreakdown: { fundamentals: row.fundamentals, sentiment: row.sentiment },
+    asOf: row.asOf.toISOString(),
+    demo: row.demo,
   }));
-  globalThis.__investmentHistory = [...entries, ...store()].slice(0, MAX_ENTRIES);
-}
-
-export function getHistory(): InvestmentHistoryEntry[] {
-  return store();
 }

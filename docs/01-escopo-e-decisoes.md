@@ -23,9 +23,9 @@ Integração bancária tradicional, e-mail, colaboração, recursos sociais, mar
 ## Decisões atuais
 
 - Nome: `personal platform AI`.
-- Persistência inicial: `localStorage`.
-- API: endpoints locais demonstrativos, com adaptador substituível.
-- Autenticação e banco: próxima etapa obrigatória antes de produção.
+- Persistência: Postgres (Supabase) via Prisma, com dados isolados por usuário. `localStorage` no cliente continua só como fallback de rede (ver [08](08-api-e-offline.md)).
+- Autenticação: login com Google via Auth.js (`next-auth` v5), estratégia de sessão em banco. Todas as rotas de dados pessoais exigem sessão; `/api/health` e `/api/investments/*` ficam abertas por não exporem dado de usuário.
+- API: endpoints Next.js App Router, protegidos por sessão, com dados no Postgres — código pronto, falta só a instância real (Supabase) e o client OAuth (Google Cloud) para rodar de ponta a ponta.
 - Amarildo: simulado e transparente.
 - Importação de documentos: posterior.
 - Investimentos: módulo público e somente informativo (ações e FIIs brasileiros), com scoring quantitativo auditável (fundamentos + notícias) e explicação em texto — sem execução de ordens. Detalhes em [09 — Conselheiro de investimentos](09-investimentos-e-harness.md).

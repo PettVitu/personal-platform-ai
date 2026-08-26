@@ -18,9 +18,9 @@
 
 1. editar tarefas e documentos;
 2. testes automatizados de domínio;
-3. API com banco persistente;
-4. autenticação e autorização;
-5. sincronização com o frontend;
+3. ~~API com banco persistente~~ — feito (Postgres via Prisma), falta só instância real configurada;
+4. ~~autenticação e autorização~~ — feito (Google via Auth.js), falta só client OAuth real configurado;
+5. sincronização com o frontend — consequência do banco compartilhado, falta validar com credenciais reais;
 6. IA real com fontes e permissões;
 7. importação/exportação segura.
 

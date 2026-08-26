@@ -14,6 +14,6 @@ export async function buildSuggestions(): Promise<InvestmentSuggestionsResponse>
     quotesDemo ? "Brapi (dados demonstrativos)" : "Brapi (preço e P/L reais; dividend yield ainda demonstrativo — plano gratuito não libera esse dado)",
     newsDemo ? "Notícias (dados demonstrativos)" : "Marketaux",
   ];
-  recordSuggestions(suggestions, demo);
+  await recordSuggestions(suggestions, demo);
   return { suggestions, demo, sources };
 }

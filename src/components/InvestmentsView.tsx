@@ -70,7 +70,7 @@ function HistoryPanel({ entries }: { entries: InvestmentHistoryEntry[] }) {
           </li>
         ))}
       </ul>
-      <p className="muted small-print">Guardado só nesta sessão do servidor (memória de processo) — ainda sem banco. Serve para comparar, no futuro, cada score com o retorno real observado depois.</p>
+      <p className="muted small-print">Guardado no banco de dados. Serve para comparar, no futuro, cada score com o retorno real observado depois.</p>
     </article>
   );
 }

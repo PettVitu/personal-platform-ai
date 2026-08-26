@@ -10,7 +10,10 @@ export async function buildSuggestions(): Promise<InvestmentSuggestionsResponse>
     .map((quote) => scoreAsset(quote, news.filter((item) => item.relatedTickers.includes(quote.ticker))))
     .sort((a, b) => b.score - a.score);
   const demo = quotesDemo || newsDemo;
-  const sources = [quotesDemo ? "Brapi (dados demonstrativos)" : "Brapi", newsDemo ? "Notícias (dados demonstrativos)" : "Marketaux"];
+  const sources = [
+    quotesDemo ? "Brapi (dados demonstrativos)" : "Brapi (preço e P/L reais; dividend yield ainda demonstrativo — plano gratuito não libera esse dado)",
+    newsDemo ? "Notícias (dados demonstrativos)" : "Marketaux",
+  ];
   recordSuggestions(suggestions, demo);
   return { suggestions, demo, sources };
 }

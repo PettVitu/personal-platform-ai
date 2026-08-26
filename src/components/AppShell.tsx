@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useState, type ReactNode } from "react";
 import { Icon } from "./Icon";
 
 export type AppRoute = "today" | "spreadsheet" | "tasks" | "finance" | "investments" | "agenda" | "more";
@@ -15,6 +17,7 @@ const navItems: { route: AppRoute; label: string; icon: "today" | "tasks" | "fin
 
 export function AppShell({ route, onNavigate, children }: { route: AppRoute; onNavigate: (route: AppRoute) => void; children: ReactNode }) {
   const activeLabel = navItems.find((item) => item.route === route)?.label ?? "Hoje";
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -26,7 +29,21 @@ export function AppShell({ route, onNavigate, children }: { route: AppRoute; onN
         <div className="sidebar-bottom"><div className="privacy-box"><span className="privacy-dot" /> Dados isolados na sua conta</div><button className="settings-link" onClick={() => onNavigate("more")}>Configurações</button><a className="settings-link" href="/api/auth/signout">Sair</a></div>
       </aside>
       <main className="main-content">
-        <header className="topbar"><button className="mobile-menu" onClick={() => onNavigate("more")} aria-label="Abrir menu"><Icon name="menu" /></button><div className="breadcrumb"><span className="muted">Personal</span><span>/</span><strong>{activeLabel}</strong></div><button className="assistant-link" onClick={() => onNavigate("more")}><Icon name="assistant" /> Amarildo</button></header>
+        <header className="topbar">
+          <button className="mobile-menu" onClick={() => setMenuOpen((value) => !value)} aria-label={menuOpen ? "Fechar menu" : "Abrir menu"} aria-expanded={menuOpen}><Icon name="menu" /></button>
+          <div className="breadcrumb"><span className="muted">Personal</span><span>/</span><strong>{activeLabel}</strong></div>
+          <button className="assistant-link" onClick={() => onNavigate("more")}><Icon name="assistant" /> Amarildo</button>
+        </header>
+        {menuOpen && (
+          <>
+            <button className="mobile-menu-backdrop" aria-label="Fechar menu" onClick={() => setMenuOpen(false)} />
+            <div className="mobile-menu-panel">
+              <p className="eyebrow">Seu espaço pessoal</p>
+              <button className="mobile-menu-link" onClick={() => { onNavigate("more"); setMenuOpen(false); }}>Configurações</button>
+              <a className="mobile-menu-link" href="/api/auth/signout">Sair</a>
+            </div>
+          </>
+        )}
         <div className="view-container">{children}</div>
       </main>
       <nav className="mobile-nav" aria-label="Navegação mobile">{navItems.map((item) => <NavItem key={item.route} item={item} active={route === item.route} mobile onClick={() => onNavigate(item.route)} />)}</nav>

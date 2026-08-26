@@ -1,10 +1,18 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "personal platform AI",
   icons: { icon: "/icon.svg" },
   description: "Um espaço pessoal para organizar tarefas, compromissos e informações.",
+};
+
+// viewportFit "cover" é o que faz o env(safe-area-inset-bottom) usado na navbar
+// mobile (overrides.css) funcionar de verdade em telas com barra de gestos/notch.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 // Roda antes da hidratação pra aplicar o tema salvo sem "flash" do tema claro

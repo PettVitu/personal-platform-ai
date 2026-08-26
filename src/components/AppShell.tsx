@@ -5,12 +5,12 @@ import { Icon } from "./Icon";
 
 export type AppRoute = "today" | "spreadsheet" | "tasks" | "finance" | "investments" | "agenda" | "more";
 
-const navItems: { route: AppRoute; label: string; icon: "today" | "tasks" | "finance" | "calendar" | "more" }[] = [
+const navItems: { route: AppRoute; label: string; icon: "today" | "tasks" | "finance" | "chart" | "calendar" | "more" }[] = [
   { route: "today", label: "Hoje", icon: "today" },
   { route: "spreadsheet", label: "Planilha", icon: "finance" },
   { route: "tasks", label: "Tarefas", icon: "tasks" },
   { route: "finance", label: "Finanças", icon: "finance" },
-  { route: "investments", label: "Investimentos", icon: "finance" },
+  { route: "investments", label: "Investimentos", icon: "chart" },
   { route: "agenda", label: "Agenda", icon: "calendar" },
   { route: "more", label: "Mais", icon: "more" },
 ];

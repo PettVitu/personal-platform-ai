@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { todayIso } from "../domain/daily-budget";
 import type { Task } from "../domain/types";
 import { Button, EmptyState, formatDate, PageIntro } from "./Common";
 import { Icon } from "./Icon";
@@ -19,7 +20,7 @@ export function TasksView({ tasks, onAdd, onUpdate, onToggle, onDelete }: { task
 }
 
 function TaskForm({ initial, onSave, onCancel }: TaskFormProps) {
-  const [title, setTitle] = useState(initial?.title ?? ""); const [date, setDate] = useState(initial?.date ?? "2026-08-14"); const [time, setTime] = useState(initial?.time ?? ""); const [priority, setPriority] = useState<Task["priority"]>(initial?.priority ?? "media");
+  const [title, setTitle] = useState(initial?.title ?? ""); const [date, setDate] = useState(initial?.date ?? todayIso()); const [time, setTime] = useState(initial?.time ?? ""); const [priority, setPriority] = useState<Task["priority"]>(initial?.priority ?? "media");
   function submit(event: React.FormEvent) { event.preventDefault(); if (!title.trim()) return; onSave({ id: initial?.id ?? `task-${Date.now()}`, title: title.trim(), date, time: time || undefined, priority, status: initial?.status ?? "pending", notes: initial?.notes }); }
   return <form className="card form-card" onSubmit={submit}><div className="form-heading"><h2>{initial ? "Editar tarefa" : "Nova tarefa"}</h2><button type="button" className="icon-close" onClick={onCancel} aria-label="Fechar"><Icon name="close" /></button></div><label>Título<input autoFocus value={title} onChange={(event) => setTitle(event.target.value)} placeholder="O que precisa ser feito?" /></label><div className="form-grid"><label>Data<input type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label><label>Horário<input type="time" value={time} onChange={(event) => setTime(event.target.value)} /></label></div><label>Prioridade<select value={priority} onChange={(event) => setPriority(event.target.value as Task["priority"])}><option value="alta">Alta</option><option value="media">Média</option><option value="baixa">Baixa</option></select></label><div className="form-actions"><Button variant="secondary" onClick={onCancel}>Cancelar</Button><Button type="submit">{initial ? "Salvar alterações" : "Salvar tarefa"}</Button></div></form>;
 }

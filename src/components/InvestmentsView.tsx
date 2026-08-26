@@ -82,7 +82,7 @@ export function InvestmentsView() {
       {error && <div className="card status-message" role="status">{error}</div>}
       {watchlist && <WatchlistPanel watchlist={watchlist} error={watchlistError} onAdd={handleAdd} onRemove={handleRemove} />}
       {loading ? (
-        <p className="muted">Calculando sugestões…</p>
+        <p className="muted loading-line"><span className="spinner" aria-hidden="true" /> Calculando sugestões…</p>
       ) : suggestions.length ? (
         <section className="investments-grid">
           {suggestions.map((item) => <SuggestionCard key={item.ticker} item={item} />)}

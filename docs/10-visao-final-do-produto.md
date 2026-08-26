@@ -28,10 +28,10 @@ Cada linha é uma coisa concreta que falta. Quando todas as linhas de um módulo
 
 ### Plataforma (transversal a todos os módulos)
 
-- [x] banco de dados persistente substituindo a API em memória (Postgres via Prisma) ([06](06-seguranca-e-lgpd.md)) — código pronto, falta uma instância real (Supabase) configurada em `DATABASE_URL`/`DIRECT_URL`
-- [x] autenticação e autorização server-side, com isolamento de dados por usuário (Auth.js + Google) — código pronto, falta o client OAuth real em `AUTH_GOOGLE_ID`/`AUTH_GOOGLE_SECRET`
+- [x] banco de dados persistente substituindo a API em memória (Postgres via Prisma) ([06](06-seguranca-e-lgpd.md)) — validado com uma instância real no Supabase
+- [x] autenticação e autorização server-side, com isolamento de dados por usuário (Auth.js + Google, sessão em JWT) — validado com login real; sessão precisou ser JWT (não "database") porque o middleware roda em Edge runtime e o Prisma padrão não funciona lá
 - [ ] criptografia em trânsito (HTTPS) e em repouso — depende do deploy (Vercel cobre HTTPS automaticamente)
-- [ ] sincronização real entre dispositivos — já é consequência do banco compartilhado, falta só validar com credenciais reais
+- [x] sincronização real entre dispositivos — consequência do banco compartilhado, já validada
 - [ ] exportação e exclusão de dados verificáveis pelo usuário (LGPD)
 - [ ] rate limiting e logs sem dado sensível
 - [ ] **regressão conhecida**: a suíte E2E (`tests/e2e.spec.ts`) navega direto para `/` e agora é redirecionada para o login do Google pelo middleware — precisa de um provider de teste (credentials) ou de sessão mockada antes de voltar a passar

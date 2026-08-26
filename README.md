@@ -109,7 +109,7 @@ src/
 ├─ components/    shell, navegação e módulos de produto (uma view por aba)
 ├─ app/           rotas do Next.js — páginas e endpoints de API
 ├─ server/        Prisma client, autenticação (helper de sessão) e adaptadores de investimentos
-├─ auth.ts        configuração do Auth.js (provider Google, sessão em banco)
+├─ auth.ts        configuração do Auth.js (provider Google, sessão em JWT)
 └─ middleware.ts  protege páginas e rotas de API atrás de login
 prisma/
 └─ schema.prisma  modelos de usuário/sessão (Auth.js) e de domínio (tarefas, finanças, etc.)

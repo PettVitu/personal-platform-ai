@@ -2,9 +2,9 @@
 
 ## Estado atual
 
-Tarefas, lançamentos, contas, agenda e documentos são persistidos em Postgres (Supabase) via Prisma, com cada registro pertencendo a um `userId` e todas as consultas filtradas por sessão. Login é feito via Google (Auth.js, `next-auth` v5), sessão guardada em banco (tabela `Session`, estratégia `database` — não é JWT). `localStorage` no cliente virou só um fallback de rede (ver [08](08-api-e-offline.md)), não a fonte de verdade.
+Tarefas, lançamentos, contas, agenda e documentos são persistidos em Postgres (Supabase) via Prisma, com cada registro pertencendo a um `userId` e todas as consultas filtradas por sessão. Login é feito via Google (Auth.js, `next-auth` v5), sessão em **JWT** — não "database": o middleware que protege as páginas roda em Edge runtime, e o Prisma Client padrão não consegue abrir conexão TCP nesse ambiente (só funciona com Prisma Accelerate ou um driver adapter). Com JWT, o middleware decodifica um cookie assinado sem tocar no banco; o adapter Prisma continua sendo usado normalmente para criar/atualizar `User` e `Account` no login, que roda numa rota de API (Node.js, sem essa restrição).
 
-Isso ainda depende de uma instância real de Postgres e de um client OAuth do Google configurados via variável de ambiente (`DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` — ver `.env.example`). Sem isso, nenhuma rota de dados pessoais responde.
+Validado de ponta a ponta com uma instância real do Supabase e um client OAuth real do Google — variáveis em `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` (ver `.env.example`). Sem elas, nenhuma rota de dados pessoais responde.
 
 ## Requisitos antes de produção
 

@@ -24,7 +24,7 @@ Integração bancária tradicional, e-mail, colaboração, recursos sociais, mar
 
 - Nome: `personal platform AI`.
 - Persistência: Postgres (Supabase) via Prisma, com dados isolados por usuário. `localStorage` no cliente continua só como fallback de rede (ver [08](08-api-e-offline.md)).
-- Autenticação: login com Google via Auth.js (`next-auth` v5), estratégia de sessão em banco. Todas as rotas de dados pessoais exigem sessão; `/api/health` e `/api/investments/*` ficam abertas por não exporem dado de usuário.
+- Autenticação: login com Google via Auth.js (`next-auth` v5), sessão em JWT (não "database" — o middleware roda em Edge runtime, onde o Prisma padrão não funciona; JWT deixa o middleware decodificar o cookie sem tocar no banco). Todas as rotas de dados pessoais exigem sessão; `/api/health` e `/api/investments/*` ficam abertas por não exporem dado de usuário.
 - API: endpoints Next.js App Router, protegidos por sessão, com dados no Postgres — código pronto, falta só a instância real (Supabase) e o client OAuth (Google Cloud) para rodar de ponta a ponta.
 - Amarildo: simulado e transparente.
 - Importação de documentos: posterior.

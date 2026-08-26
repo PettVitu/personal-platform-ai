@@ -42,6 +42,16 @@ export async function fetchQuotes(watchlist: WatchlistEntry[]): Promise<{ quotes
   return { quotes, demo: !anyReal };
 }
 
+// Usado pela comparação score x retorno real (server/investments/history.ts):
+// busca só o preço atual de um ticker, sem watchlist nem fallback demonstrativo —
+// se não há token ou a chamada falha, retorna null e quem chamou decide adiar.
+export async function fetchCurrentPrice(ticker: string): Promise<number | null> {
+  const token = process.env.BRAPI_TOKEN;
+  if (!token) return null;
+  const result = await fetchOne(ticker, token);
+  return result?.regularMarketPrice ?? null;
+}
+
 async function fetchOne(ticker: string, token: string): Promise<BrapiResult | null> {
   try {
     const response = await fetch(`https://brapi.dev/api/quote/${ticker}?token=${token}`, { cache: "no-store" });

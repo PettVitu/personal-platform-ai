@@ -17,6 +17,6 @@ export async function buildSuggestions(userId: string | null): Promise<Investmen
     newsDemo ? "Notícias (dados demonstrativos)" : "Marketaux",
   ];
   if (isDefault) sources.push("watchlist padrão");
-  await recordSuggestions(suggestions, demo);
+  await recordSuggestions(suggestions, quotes, demo);
   return { suggestions, demo, sources };
 }

@@ -190,15 +190,22 @@ model RateLimitEntry {
 
 // Histórico do conselheiro de investimentos: dado de mercado público, não pertence
 // a um usuário específico — por isso sem userId, diferente dos modelos acima.
+// priceAtScoring/realizedReturnPct/evaluatedAt sustentam a comparação entre o
+// score dado e o retorno real observado depois (ver server/investments/history.ts).
+// Entradas antigas (antes desse campo existir) e entradas demo ficam com esses
+// três campos nulos pra sempre — não tem preço real pra comparar.
 model InvestmentHistoryEntry {
-  id               String   @id @default(cuid())
-  ticker           String
-  score            Int
-  fundamentals     Int
-  sentiment        Int
-  asOf             DateTime
-  demo             Boolean
-  createdAt        DateTime @default(now())
+  id                String    @id @default(cuid())
+  ticker            String
+  score             Int
+  fundamentals      Int
+  sentiment         Int
+  asOf              DateTime
+  demo              Boolean
+  priceAtScoring    Float?
+  realizedReturnPct Float?
+  evaluatedAt       DateTime?
+  createdAt         DateTime  @default(now())
 
   @@index([ticker])
   @@index([createdAt])

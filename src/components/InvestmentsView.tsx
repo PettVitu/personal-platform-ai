@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { evaluateScoreCall } from "../domain/investment-evaluation";
 import { investmentRepository } from "../domain/repositories";
 import type { InvestmentHistoryEntry, InvestmentSuggestion, WatchlistResponse } from "../domain/types";
 import { EmptyState, PageIntro } from "./Common";
@@ -116,6 +117,10 @@ function WatchlistPanel({ watchlist, error, onAdd, onRemove }: { watchlist: Watc
 }
 
 function HistoryPanel({ entries }: { entries: InvestmentHistoryEntry[] }) {
+  const evaluated = entries.filter((entry) => entry.realizedReturnPct !== null);
+  const calls = evaluated.map((entry) => evaluateScoreCall(entry.score, entry.realizedReturnPct!)).filter((call): call is "acertou" | "errou" => call !== null);
+  const hits = calls.filter((call) => call === "acertou").length;
+
   return (
     <article className="card list-card investments-history">
       <div className="card-heading">
@@ -123,16 +128,30 @@ function HistoryPanel({ entries }: { entries: InvestmentHistoryEntry[] }) {
         <small className="muted">últimas {entries.length} sugestões geradas</small>
       </div>
       <ul className="history-list">
-        {entries.slice(0, 20).map((entry) => (
-          <li key={entry.id}>
-            <span className="history-ticker">{entry.ticker}</span>
-            <span className="history-score">{entry.score}/100</span>
-            <span className="muted">fund. {entry.scoreBreakdown.fundamentals} · not. {entry.scoreBreakdown.sentiment}</span>
-            <span className="muted history-time">{formatDateTime(entry.asOf)}{entry.demo ? " · demo" : ""}</span>
-          </li>
-        ))}
+        {entries.slice(0, 20).map((entry) => {
+          const call = entry.realizedReturnPct !== null ? evaluateScoreCall(entry.score, entry.realizedReturnPct) : null;
+          return (
+            <li key={entry.id}>
+              <span className="history-ticker">{entry.ticker}</span>
+              <span className="history-score">{entry.score}/100</span>
+              <span className="muted">fund. {entry.scoreBreakdown.fundamentals} · not. {entry.scoreBreakdown.sentiment}</span>
+              {entry.realizedReturnPct !== null ? (
+                <span className={entry.realizedReturnPct > 0 ? "positive" : entry.realizedReturnPct < 0 ? "negative" : "muted"}>
+                  {entry.realizedReturnPct > 0 ? "+" : ""}{entry.realizedReturnPct.toFixed(1)}% desde a sugestão{call && ` · ${call}`}
+                </span>
+              ) : (
+                <span className="muted">{entry.demo ? "demo — sem retorno real" : "aguardando retorno (7+ dias)"}</span>
+              )}
+              <span className="muted history-time">{formatDateTime(entry.asOf)}{entry.demo ? " · demo" : ""}</span>
+            </li>
+          );
+        })}
       </ul>
-      <p className="muted small-print">Guardado no banco de dados. Serve para comparar, no futuro, cada score com o retorno real observado depois.</p>
+      <p className="muted small-print">
+        {calls.length > 0
+          ? `Score acertou a direção em ${hits}/${calls.length} sugestões avaliadas (score ≥ 60 esperando alta, ≤ 40 esperando queda ou estabilidade; ${evaluated.length - calls.length} ficaram na faixa neutra, sem chamada).`
+          : "Cada sugestão real guarda o preço do momento; a partir de 7 dias, o retorno até o preço atual é comparado com o score dado."}
+      </p>
     </article>
   );
 }

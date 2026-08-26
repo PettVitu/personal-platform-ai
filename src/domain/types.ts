@@ -109,6 +109,9 @@ export type InvestmentHistoryEntry = {
   scoreBreakdown: { fundamentals: number; sentiment: number };
   asOf: string;
   demo: boolean;
+  priceAtScoring: number | null;
+  realizedReturnPct: number | null;
+  evaluatedAt: string | null;
 };
 
 export type WatchlistEntry = { ticker: string; name: string; assetClass: AssetClass };

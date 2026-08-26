@@ -11,5 +11,7 @@ Documentação ativa do aplicativo pessoal privado. A primeira entrega usa front
 - [Amarildo e IA](./05-ia-e-prompts.md)
 - [Segurança e privacidade](./06-seguranca-e-lgpd.md)
 - [Roadmap e métricas](./07-roadmap-e-metricas.md)
+- [API, repositórios e modo offline](./08-api-e-offline.md)
+- [Investimentos e harness](./09-investimentos-e-harness.md)
 
 Materiais históricos do produto anterior foram arquivados/removidos do escopo ativo.

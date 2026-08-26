@@ -1,7 +1,7 @@
 import { apiRequest, unwrap } from "./api-client";
 import { loadAppData, saveAppData } from "./storage";
 import { seedData } from "./seed";
-import type { AppData, CreateRecurringBillInput, CreateTaskInput, CreateTransactionInput, RecurringBill, Task, Transaction, UpdateRecurringBillInput, UpdateTaskInput, UpdateTransactionInput } from "./types";
+import type { AppData, CreateRecurringBillInput, CreateTaskInput, CreateTransactionInput, InvestmentSuggestionsResponse, RecurringBill, Task, Transaction, UpdateRecurringBillInput, UpdateTaskInput, UpdateTransactionInput } from "./types";
 
 type Collection = "tasks" | "transactions" | "bills";
 type ApiRepository<T, Create, Update> = {
@@ -23,6 +23,10 @@ function remote<T, Create, Update>(collection: Collection): ApiRepository<T, Cre
 export const taskRepository = remote<Task, CreateTaskInput, UpdateTaskInput>("tasks");
 export const transactionRepository = remote<Transaction, CreateTransactionInput, UpdateTransactionInput>("transactions");
 export const billRepository = remote<RecurringBill, CreateRecurringBillInput, UpdateRecurringBillInput>("bills");
+
+export const investmentRepository = {
+  suggestions: async () => unwrap(await apiRequest<{ data: InvestmentSuggestionsResponse }>("/api/investments/suggestions")),
+};
 
 export function localRepository() {
   let data = loadAppData(seedData);

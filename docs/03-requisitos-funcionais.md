@@ -32,7 +32,21 @@ Saldo = receitas confirmadas − despesas confirmadas. Todo resumo deve indicar 
 
 ### Proibições
 
-Não incluir investimentos, crédito, empréstimos, produtos bancários, integração bancária, recomendações ou promessa de resultado.
+Não incluir crédito, empréstimos, produtos bancários, integração bancária, recomendações ou promessa de resultado. Investimentos são tratados em módulo separado (ver abaixo) e nunca se misturam ao saldo/lançamentos deste módulo.
+
+## Conselheiro de investimentos
+
+Módulo separado da organização financeira básica, público e somente informativo — nunca executa ordens. Detalhes de arquitetura e fontes de dados em [09 — Conselheiro de investimentos](09-investimentos-e-harness.md).
+
+Resumo funcional:
+
+- foco em ações e FIIs brasileiros (watchlist fixa nesta primeira versão);
+- ingestão de cotação/fundamentos (Brapi) e notícias (Marketaux), com fonte e horário sempre visíveis; quando as chaves de API não estão configuradas, usa dados demonstrativos e sinaliza isso na interface;
+- scoring quantitativo auditável por ativo, combinando fundamentos (dividend yield, P/L) e sentimento de notícia;
+- explicação em texto de por que cada ativo pontuou daquele jeito;
+- sem persistência de histórico ainda, sem execução de ordens, sem promessa de retorno.
+
+Execução automática de ordens (ex.: trading de cripto via Binance) não faz parte deste projeto — fica reservada a um repositório separado e privado, a ser criado depois do conselheiro estar finalizado.
 
 ## Agenda
 

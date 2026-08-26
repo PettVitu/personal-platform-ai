@@ -26,6 +26,9 @@ Endpoints locais:
 - `PATCH|DELETE /api/transactions/:id`
 - `GET|POST /api/bills`
 - `PATCH|DELETE /api/bills/:id`
+- `GET /api/investments/suggestions`
+
+O conselheiro de investimentos (aba "Investimentos") sugere ações e FIIs brasileiros com base em fundamentos e notícias. Sem as variáveis `BRAPI_TOKEN` e `MARKETAUX_API_KEY` (ver `.env.example`), ele usa dados demonstrativos e sinaliza isso na interface. Não executa ordens — é só informativo.
 
 Para validar produção:
 

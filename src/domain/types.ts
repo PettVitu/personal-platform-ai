@@ -63,6 +63,45 @@ export type UpdateTransactionInput = Partial<Omit<Transaction, "id">>;
 export type CreateRecurringBillInput = Omit<RecurringBill, "id" | "paid"> & { paid?: boolean };
 export type UpdateRecurringBillInput = Partial<Omit<RecurringBill, "id">>;
 
+export type AssetClass = "acao" | "fii";
+export type Sentiment = "positivo" | "negativo" | "neutro";
+
+export type InvestmentQuote = {
+  ticker: string;
+  name: string;
+  assetClass: AssetClass;
+  price: number;
+  dividendYield: number;
+  priceToEarnings: number | null;
+  updatedAt: string;
+};
+
+export type InvestmentNews = {
+  headline: string;
+  url: string;
+  source: string;
+  publishedAt: string;
+  sentiment: Sentiment;
+  relatedTickers: string[];
+};
+
+export type InvestmentSuggestion = {
+  ticker: string;
+  name: string;
+  assetClass: AssetClass;
+  score: number;
+  scoreBreakdown: { fundamentals: number; sentiment: number };
+  explanation: string;
+  news: InvestmentNews[];
+  asOf: string;
+};
+
+export type InvestmentSuggestionsResponse = {
+  suggestions: InvestmentSuggestion[];
+  demo: boolean;
+  sources: string[];
+};
+
 export type ApiErrorKind = "network" | "validation" | "server" | "not-found" | "unknown";
 
 export class DomainApiError extends Error {

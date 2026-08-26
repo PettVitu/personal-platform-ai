@@ -1,9 +1,9 @@
 import { apiRequest, unwrap } from "./api-client";
 import { loadAppData, saveAppData } from "./storage";
 import { seedData } from "./seed";
-import type { AppData, BudgetCategory, CreateBudgetCategoryInput, CreateRecurringBillInput, CreateTaskInput, CreateTransactionInput, InvestmentHistoryEntry, InvestmentInsightsResponse, InvestmentSuggestionsResponse, RecurringBill, Task, Transaction, UpdateBudgetCategoryInput, UpdateRecurringBillInput, UpdateTaskInput, UpdateTransactionInput, WatchlistResponse } from "./types";
+import type { AppData, Appointment, BudgetCategory, CreateAppointmentInput, CreateBudgetCategoryInput, CreateRecurringBillInput, CreateTaskInput, CreateTransactionInput, InvestmentHistoryEntry, InvestmentInsightsResponse, InvestmentSuggestionsResponse, RecurringBill, Task, Transaction, UpdateAppointmentInput, UpdateBudgetCategoryInput, UpdateRecurringBillInput, UpdateTaskInput, UpdateTransactionInput, WatchlistResponse } from "./types";
 
-type Collection = "tasks" | "transactions" | "bills" | "budgetCategories";
+type Collection = "tasks" | "transactions" | "bills" | "budgetCategories" | "appointments";
 type ApiRepository<T, Create, Update> = {
   list(): Promise<T[]>;
   create(input: Create): Promise<T>;
@@ -23,6 +23,7 @@ function remote<T, Create, Update>(collection: Collection): ApiRepository<T, Cre
 export const taskRepository = remote<Task, CreateTaskInput, UpdateTaskInput>("tasks");
 export const transactionRepository = remote<Transaction, CreateTransactionInput, UpdateTransactionInput>("transactions");
 export const billRepository = remote<RecurringBill, CreateRecurringBillInput, UpdateRecurringBillInput>("bills");
+export const appointmentRepository = remote<Appointment, CreateAppointmentInput, UpdateAppointmentInput>("appointments");
 
 // URL usa hífen ("budget-categories"), a chave de AppData usa camelCase
 // ("budgetCategories") — por isso não dá pra reaproveitar remote() aqui, que

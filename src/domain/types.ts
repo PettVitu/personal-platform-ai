@@ -71,6 +71,8 @@ export type CreateRecurringBillInput = Omit<RecurringBill, "id" | "paid"> & { pa
 export type UpdateRecurringBillInput = Partial<Omit<RecurringBill, "id">>;
 export type CreateBudgetCategoryInput = Omit<BudgetCategory, "id">;
 export type UpdateBudgetCategoryInput = Partial<Omit<BudgetCategory, "id">>;
+export type CreateAppointmentInput = Omit<Appointment, "id">;
+export type UpdateAppointmentInput = Partial<Omit<Appointment, "id">>;
 
 export type AssetClass = "acao" | "fii";
 export type Sentiment = "positivo" | "negativo" | "neutro";

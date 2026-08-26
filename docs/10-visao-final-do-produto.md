@@ -35,7 +35,7 @@ Cada linha é uma coisa concreta que falta. Quando todas as linhas de um módulo
 - [x] sincronização real entre dispositivos — consequência do banco compartilhado, já validada
 - [ ] exportação e exclusão de dados verificáveis pelo usuário (LGPD)
 - [ ] rate limiting e logs sem dado sensível
-- [ ] **regressão conhecida**: a suíte E2E (`tests/e2e.spec.ts`) navega direto para `/` e agora é redirecionada para o login do Google pelo middleware — precisa de um provider de teste (credentials) ou de sessão mockada antes de voltar a passar
+- [x] suíte E2E consertada — provider `Credentials` só de teste (`E2E_TEST_AUTH_SECRET`, nunca em produção) autentica via `tests/auth.setup.ts` sem depender de conta Google real
 - [ ] testes automatizados de domínio, além dos E2E já existentes
 - [ ] acessibilidade auditada (foco visível, contraste, navegação por teclado, `prefers-reduced-motion`) — [02](02-fluxos-e-ux.md)
 
@@ -69,7 +69,7 @@ Cada linha é uma coisa concreta que falta. Quando todas as linhas de um módulo
 
 1. ~~Banco + autenticação~~ — feito, validado em produção.
 2. ~~Deploy~~ — feito: [personal-platform-ai.vercel.app](https://personal-platform-ai.vercel.app), branch `main`, Postgres via pooler do Supabase.
-3. **Consertar a suíte E2E** — hoje quebrada pelo redirect de login; precisa de um provider de teste (credentials) ou sessão mockada.
+3. ~~Consertar a suíte E2E~~ — feito, provider de teste em `tests/auth.setup.ts`.
 4. **Testes de acesso indevido e rate limiting** — validar isolamento por usuário no ambiente real.
 5. **Conselheiro**: watchlist configurável.
 6. **IA real** (Amarildo e explicação do conselheiro) — só depois da base de dados e do RAG terem onde se apoiar.

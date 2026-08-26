@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { todayIso } from "../domain/daily-budget";
+import { applyTheme, getStoredTheme, THEMES, type Theme } from "../domain/theme";
 import type { DocumentNote } from "../domain/types";
 import { Button, EmptyState, PageIntro } from "./Common";
 import { Icon } from "./Icon";
@@ -10,7 +11,14 @@ export function MoreView({ documents, onAddDocument }: { documents: DocumentNote
   if (active === "rewrite") return <Rewrite text={text} setText={setText} result={result} onRewrite={() => setResult(text.trim() ? `Versão revisada:\n\n${text.trim()}\n\nO texto foi simplificado nesta demonstração. Revise antes de salvar.` : "Digite um texto para começar.")} onBack={() => setActive("more")} />;
   if (active === "documents") return <Documents documents={documents} onAddDocument={onAddDocument} onBack={() => setActive("more")} />;
   if (active === "privacy") return <Privacy onBack={() => setActive("more")} />;
-  return <><PageIntro eyebrow="Espaço pessoal" title="Mais" description="Ferramentas complementares para organizar e consultar suas informações." /><section className="more-grid"><button className="feature-card" onClick={() => setActive("assistant")}><span className="feature-icon assistant"><Icon name="assistant" /></span><strong>Conversar com Amarildo</strong><small>Consulte seus dados e organize o próximo passo.</small><Icon name="arrow" /></button><button className="feature-card" onClick={() => setActive("rewrite")}><span className="feature-icon">Aa</span><strong>Reformular texto</strong><small>Corrija, simplifique ou resuma sem perder o original.</small><Icon name="arrow" /></button><button className="feature-card" onClick={() => setActive("documents")}><span className="feature-icon">□</span><strong>Documentos</strong><small>{documents.length} documento(s) salvo(s) neste dispositivo.</small><Icon name="arrow" /></button><button className="feature-card" onClick={() => setActive("privacy")}><span className="feature-icon">⇩</span><strong>Privacidade e dados</strong><small>Baixe uma cópia dos seus dados ou exclua sua conta.</small><Icon name="arrow" /></button></section><section className="card settings-card"><p className="eyebrow">Privacidade</p><h2>Seus dados ficam com você</h2><p className="muted">Tarefas, finanças, agenda e documentos ficam salvos na sua conta, isolados dos outros usuários. Use “Privacidade e dados” para baixar ou apagar tudo quando quiser.</p></section></>;
+  return <><PageIntro eyebrow="Espaço pessoal" title="Mais" description="Ferramentas complementares para organizar e consultar suas informações." /><section className="more-grid"><button className="feature-card" onClick={() => setActive("assistant")}><span className="feature-icon assistant"><Icon name="assistant" /></span><strong>Conversar com Amarildo</strong><small>Consulte seus dados e organize o próximo passo.</small><Icon name="arrow" /></button><button className="feature-card" onClick={() => setActive("rewrite")}><span className="feature-icon">Aa</span><strong>Reformular texto</strong><small>Corrija, simplifique ou resuma sem perder o original.</small><Icon name="arrow" /></button><button className="feature-card" onClick={() => setActive("documents")}><span className="feature-icon">□</span><strong>Documentos</strong><small>{documents.length} documento(s) salvo(s) neste dispositivo.</small><Icon name="arrow" /></button><button className="feature-card" onClick={() => setActive("privacy")}><span className="feature-icon">⇩</span><strong>Privacidade e dados</strong><small>Baixe uma cópia dos seus dados ou exclua sua conta.</small><Icon name="arrow" /></button></section><ThemeSwitcher /><section className="card settings-card"><p className="eyebrow">Privacidade</p><h2>Seus dados ficam com você</h2><p className="muted">Tarefas, finanças, agenda e documentos ficam salvos na sua conta, isolados dos outros usuários. Use “Privacidade e dados” para baixar ou apagar tudo quando quiser.</p></section></>;
+}
+
+function ThemeSwitcher() {
+  const [theme, setTheme] = useState<Theme>("light");
+  useEffect(() => { setTheme(getStoredTheme()); }, []);
+  function choose(value: Theme) { applyTheme(value); setTheme(value); }
+  return <section className="card settings-card"><p className="eyebrow">Aparência</p><h2>Tema</h2><p className="muted">Só muda a aparência neste dispositivo — não afeta seus dados.</p><div className="theme-options">{THEMES.map((option) => <button key={option.value} type="button" className={`theme-option ${theme === option.value ? "active" : ""}`} onClick={() => choose(option.value)} aria-pressed={theme === option.value}>{option.label}</button>)}</div></section>;
 }
 
 function Privacy({ onBack }: { onBack: () => void }) {

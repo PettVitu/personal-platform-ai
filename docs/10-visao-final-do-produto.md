@@ -30,7 +30,8 @@ Cada linha é uma coisa concreta que falta. Quando todas as linhas de um módulo
 
 - [x] banco de dados persistente substituindo a API em memória (Postgres via Prisma) ([06](06-seguranca-e-lgpd.md)) — validado com uma instância real no Supabase
 - [x] autenticação e autorização server-side, com isolamento de dados por usuário (Auth.js + Google, sessão em JWT) — validado com login real; sessão precisou ser JWT (não "database") porque o middleware roda em Edge runtime e o Prisma padrão não funciona lá
-- [ ] criptografia em trânsito (HTTPS) e em repouso — depende do deploy (Vercel cobre HTTPS automaticamente)
+- [x] criptografia em trânsito (HTTPS) — em produção em [personal-platform-ai.vercel.app](https://personal-platform-ai.vercel.app), HTTPS automático da Vercel
+- [ ] criptografia em repouso no banco — depende de configuração do Supabase
 - [x] sincronização real entre dispositivos — consequência do banco compartilhado, já validada
 - [ ] exportação e exclusão de dados verificáveis pelo usuário (LGPD)
 - [ ] rate limiting e logs sem dado sensível
@@ -66,11 +67,21 @@ Cada linha é uma coisa concreta que falta. Quando todas as linhas de um módulo
 
 ## Ordem recomendada
 
-1. **Banco + autenticação** — código pronto (Prisma + Auth.js/Google); falta criar a instância real no Supabase e o client OAuth no Google Cloud, preencher `.env.local` e rodar `npm run db:push`.
-2. **Testes de acesso indevido e rate limiting** — validar isolamento por usuário agora que o banco é real.
-3. **Conselheiro**: watchlist configurável — o histórico já foi persistido no mesmo passo do banco.
-4. **IA real** (Amarildo e explicação do conselheiro) — só depois da base de dados e do RAG terem onde se apoiar.
-5. **Harness de trading (Binance)** — projeto novo e separado, só depois de tudo acima.
+1. ~~Banco + autenticação~~ — feito, validado em produção.
+2. ~~Deploy~~ — feito: [personal-platform-ai.vercel.app](https://personal-platform-ai.vercel.app), branch `main`, Postgres via pooler do Supabase.
+3. **Consertar a suíte E2E** — hoje quebrada pelo redirect de login; precisa de um provider de teste (credentials) ou sessão mockada.
+4. **Testes de acesso indevido e rate limiting** — validar isolamento por usuário no ambiente real.
+5. **Conselheiro**: watchlist configurável.
+6. **IA real** (Amarildo e explicação do conselheiro) — só depois da base de dados e do RAG terem onde se apoiar.
+7. **Harness de trading (Binance)** — projeto novo e separado, só depois de tudo acima.
+
+## Notas de deploy (Vercel + Supabase)
+
+- **Framework Preset** do projeto na Vercel precisa estar em "Next.js", não "Other" — senão o build não roda de verdade.
+- **`DATABASE_URL` em produção precisa ser a connection string do pooler do Supabase** (porta 6543, `aws-0-<região>.pooler.supabase.com`), nunca a conexão direta (porta 5432, `db.<ref>.supabase.co`) — essa é IPv6-only e a Vercel não alcança. `DIRECT_URL` (só usada por `prisma migrate`) pode continuar sendo a direta.
+- O middleware (`src/middleware.ts`) usa `src/auth.config.ts` (sem adapter/Prisma) em vez de `src/auth.ts` (completo) — importar a versão completa no middleware estoura o limite de 1MB de Edge Function do plano Hobby, mesmo sem nunca consultar o banco.
+- Sessão do Auth.js é `jwt`, não `database` — o middleware roda em Edge runtime e o Prisma padrão não abre conexão TCP lá.
+- Depois de qualquer deploy novo com domínio diferente, adicionar `https://SEU-DOMINIO/api/auth/callback/google` nas Authorized redirect URIs do client OAuth no Google Cloud.
 
 ## Fora de escopo definitivo
 

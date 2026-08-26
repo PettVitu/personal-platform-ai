@@ -11,6 +11,7 @@
 [![Auth.js](https://img.shields.io/badge/Auth.js-Google-000000?logo=auth0&logoColor=white)](https://authjs.dev)
 [![Playwright](https://img.shields.io/badge/tested%20with-Playwright-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev)
 [![Status](https://img.shields.io/badge/status-em%20desenvolvimento-orange)](#estado-atual)
+[![Deploy](https://img.shields.io/badge/deploy-vercel-black?logo=vercel&logoColor=white)](https://personal-platform-ai.vercel.app)
 
 </div>
 

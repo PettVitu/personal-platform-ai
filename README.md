@@ -120,7 +120,7 @@ prisma/
 
 Frontend funcional em Next.js. Tarefas, finanças, agenda, documentos e o histórico do conselheiro persistem em Postgres via Prisma, isolados por usuário autenticado via Google. O código está pronto; falta uma instância real de banco (Supabase) e um client OAuth (Google Cloud) configurados via `.env.local` para rodar de ponta a ponta — sem isso, o app fica preso na tela de login. Ainda não há chamada real de IA — o Amarildo é uma simulação transparente.
 
-Todas as decisões de escopo, princípios e limitações estão documentadas em [`docs/`](docs/README.md) — comece por [`docs/10-visao-final-do-produto.md`](docs/10-visao-final-do-produto.md) para o checklist do que falta em cada módulo.
+Todas as decisões de escopo, princípios e limitações estão documentadas em [`docs/`](docs/README.md). Sessão nova ou perdeu o fio? Comece por [`docs/00-continuidade.md`](docs/00-continuidade.md); para o checklist do que falta em cada módulo, [`docs/10-visao-final-do-produto.md`](docs/10-visao-final-do-produto.md).
 
 ## Princípios
 
